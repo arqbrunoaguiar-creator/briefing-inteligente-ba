@@ -12,76 +12,88 @@ import {
 } from '@/data/briefingData';
 import styles from './briefing.module.css';
 
-type Answers = Record<string, unknown>;
-interface ClientData { clientName: string; spouseName: string; children: { name: string; age: string }[]; rooms: string[] }
-
-const roomKeyMap: Record<string, string> = {
-  'Suíte Master': 'suite-master', 'Cozinha': 'cozinha', 'Sala de Estar / Jantar': 'sala-estar',
-  'Lavabo': 'lavabo', 'Home Office': 'home-office', 'Banheiro': 'banheiro',
-  'Área de Serviço': 'area-servico', 'Varanda / Terraço': 'varanda', 'Quarto': 'quarto',
+// IMAGENS SELECIONADAS (CURADORIA RS/SC)
+const curatedImages = {
+  classico: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1000&auto=format&fit=crop",
+  moderno: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1000&auto=format&fit=crop",
+  industrial: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1000&auto=format&fit=crop",
+  minimalista: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1000&auto=format&fit=crop",
+  luxo: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1000&auto=format&fit=crop"
 };
 
 export default function BriefingPage() {
   const params = useParams();
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [client, setClient] = useState<ClientData | null>(null);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [selectedStyles, setSelectedStyles] = useState<Record<number, string>>({});
+  const [client, setClient] = useState<any>(null);
+  const [answers, setAnswers] = useState<any>({});
+  const [selectedStyles, setSelectedStyles] = useState<any>({});
   const [selectedWords, setSelectedWords] = useState<number[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [selectedInvestment, setSelectedInvestment] = useState('');
   const [priorities, setPriorities] = useState(priorityItems);
-  const [roomHabits, setRoomHabits] = useState<Record<string, string[]>>({});
-  const [roomEquip, setRoomEquip] = useState<Record<string, string[]>>({});
-  const [roomNotes, setRoomNotes] = useState<Record<string, string>>({});
+  const [roomHabits, setRoomHabits] = useState<any>({});
+  const [roomNotes, setRoomNotes] = useState<any>({});
   const [animDir, setAnimDir] = useState<'next' | 'prev'>('next');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const raw = localStorage.getItem(`briefing-${params.id}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        // O local storage pode vir de duas formas (draft ou payload final do supabase)
-        setClient(parsed.family || parsed); 
-      }
+      if (raw) setClient(JSON.parse(raw));
     }
   }, [params.id]);
 
-  if (!client) return <div className={styles.loading}>Carregando briefing premium...</div>;
+  if (!client) return <div className={styles.loading}>Carregando briefing...</div>;
 
-  const rooms = (client.rooms || []).map(r => roomKeyMap[r] || r).filter(r => roomTemplates[r]);
-  const styleStart = 1; const styleEnd = styleStart + styleQuestions.length - 1;
-  const wordsStep = styleEnd + 1; const hobbiesStep = wordsStep + 1;
-  const propertyStep = hobbiesStep + 1; const investStep = propertyStep + 1;
-  const prioStep = investStep + 1; const dynStep = prioStep + 1;
-  const roomStart = dynStep + 1; const roomEnd = roomStart + (rooms.length || 0) - 1;
-  const reviewStep = (roomEnd || dynStep) + 1; const totalSteps = reviewStep + 1;
+  const rooms = (client.rooms || []).map((r: string) => r).filter((r: string) => roomTemplates[r] || r);
+  
+  const styleStart = 1; 
+  const styleEnd = styleStart + styleQuestions.length - 1;
+  const wordsStep = styleEnd + 1; 
+  const hobbiesStep = wordsStep + 1;
+  const propertyStep = hobbiesStep + 1; 
+  const investStep = propertyStep + 1;
+  const prioStep = investStep + 1; 
+  const dynStep = prioStep + 1;
+  const roomStart = dynStep + 1; 
+  const roomEnd = roomStart + (rooms.length > 0 ? rooms.length - 1 : 0);
+  const reviewStep = roomEnd + 1;
+  const totalSteps = reviewStep + 1;
 
   const getPhase = () => {
     if (step === 0) return 'Identidade';
-    if (step <= styleEnd) return `Estilo · ${step}`;
-    if (step === wordsStep || step === hobbiesStep) return 'Perfil';
+    if (step <= styleEnd) return 'Estilos';
+    if (step <= hobbiesStep) return 'Perfil';
     if (step <= dynStep) return 'Diretrizes';
     if (step <= roomEnd) return 'Ambientes';
     return 'Dossiê';
   };
 
-  const nav = (dir: 'next' | 'prev') => { setAnimDir(dir); setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const set = (k: string, v: unknown) => setAnswers(a => ({ ...a, [k]: v }));
-  const tog = (arr: string[], item: string) => arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
+  const nav = (dir: 'next' | 'prev') => { 
+    setAnimDir(dir); 
+    setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-  const currentRoom = rooms.length > 0 && step >= roomStart && step <= roomEnd ? roomTemplates[rooms[step - roomStart]] : null;
+  const setA = (k: string, v: any) => setAnswers((prev: any) => ({ ...prev, [k]: v }));
+  const tog = (arr: any[], item: any) => arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
+
+  const currentRoomKey = rooms[step - roomStart];
+  const currentRoom = roomTemplates[currentRoomKey] || (currentRoomKey ? { name: currentRoomKey, icon: '🏠', habits: ['Viver bem'], equipment: [] } : null);
+
+  const handleFinish = async () => {
+    setIsSaving(true);
+    const payload = { id: params.id, client_name: client.clientName, answers: { styles: selectedStyles, words: selectedWords, hobbies: selectedHobbies, investment: selectedInvestment, dynamics: answers } };
+    try { await supabase.from('briefings').upsert(payload); } catch (e) {}
+    router.push(`/dossie/${params.id}`);
+  };
 
   return (
     <main className={styles.main}>
-      <div className={styles.bgSpline}>
-        <div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div>
-      </div>
-
+      <div className={styles.bgSpline}><div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div></div>
       <header className={styles.header} style={{ background: 'rgba(255,255,255,0.95)' }}>
-        <Link href="/" className={styles.logoMini}><Image src="/brand/logo-icon-dark.png" alt="BA" width={32} height={32} /></Link>
+        <Link href="/"><Image src="/brand/logo-icon-dark.png" alt="BA" width={32} height={32} /></Link>
         <div className={styles.headerCenter}>
           <span className={styles.phaseName} style={{ color: '#0d1b2a' }}>{getPhase()}</span>
           <div className={styles.progressTrack} style={{ background: 'rgba(13, 27, 42, 0.1)' }}>
@@ -93,31 +105,30 @@ export default function BriefingPage() {
 
       <div className={styles.content}>
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-            className={`glass-panel ${styles.card}`} style={{ background: 'rgba(255, 255, 255, 0.92)' }}
+          <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            className={`glass-panel ${styles.card}`} style={{ background: 'rgba(255, 255, 255, 0.95)' }}
           >
             {step === 0 && (
               <div className={styles.section}>
-                <span className={styles.tag} style={{ color: 'rgba(13, 27, 42, 0.4)' }}>Início</span>
-                <h2 style={{ color: '#0d1b2a', fontSize: '2.8rem', fontWeight: '400' }}>Olá, {client.clientName}!</h2>
-                <p className={styles.desc} style={{ color: '#333' }}>Seu projeto será moldado pelas próximas respostas. Vamos começar?</p>
-                <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.5rem', borderRadius: '16px', marginTop: '1.5rem', color: '#0d1b2a', border: '1px solid rgba(13, 27, 42, 0.1)' }}>
-                   <p style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}><strong>Cônjuge:</strong> {client.spouseName || 'Não informado'}</p>
-                   <p style={{ fontSize: '1.1rem' }}><strong>Filhos:</strong> {client.children && client.children.length > 0 ? client.children.map(c => c.name).join(', ') : 'Nenhum informado'}</p>
+                <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Olá, {client.clientName}!</h2>
+                <p style={{ color: '#333', fontSize: '1.1rem' }}>Vamos iniciar o mapeamento do seu novo lar.</p>
+                <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.2rem', borderRadius: '12px', marginTop: '1.5rem', color: '#0d1b2a' }}>
+                   <p><strong>Cônjuge:</strong> {client.spouseName || 'Nenhum'}</p>
+                   <p><strong>Filhos:</strong> {client.children?.length > 0 ? client.children.map((c: any) => c.name).join(', ') : 'Nenhum'}</p>
                 </div>
               </div>
             )}
 
             {step >= styleStart && step <= styleEnd && (
               <div className={styles.section}>
-                <span className={styles.tag}>Parte 1: Estilo</span>
                 <h2 style={{ color: '#0d1b2a' }}>{styleQuestions[step-1].question}</h2>
                 <div className={styles.styleGrid}>
-                  {styleQuestions[step-1].options.map(opt => (
+                  {styleQuestions[step-1].options.map((opt: any) => (
                     <button key={opt.id} className={`${styles.styleCard} ${selectedStyles[styleQuestions[step-1].id] === opt.id ? styles.styleActive : ''}`}
-                      onClick={() => setSelectedStyles(s => ({ ...s, [styleQuestions[step-1].id]: opt.id }))}>
-                      <div className={styles.styleImg} style={{ background: opt.gradient }}>{opt.image && <img src={opt.image} alt={opt.label} className={styles.stylePhoto} />}</div>
+                      onClick={() => setSelectedStyles((s: any) => ({ ...s, [styleQuestions[step-1].id]: opt.id }))}>
+                      <div className={styles.styleImg} style={{ background: '#eee' }}>
+                        <img src={curatedImages[opt.id as keyof typeof curatedImages] || curatedImages.moderno} alt={opt.label} className={styles.stylePhoto} />
+                      </div>
                       <div className={styles.styleInfo}><strong style={{ color: selectedStyles[styleQuestions[step-1].id] === opt.id ? '#fff' : '#0d1b2a' }}>{opt.label}</strong></div>
                     </button>
                   ))}
@@ -125,24 +136,39 @@ export default function BriefingPage() {
               </div>
             )}
 
-            {/* Restante da lógica de renderização mantida e cores ajustadas */}
-            {step === wordsStep && (
-              <div className={styles.section}>
-                <h2 style={{ color: '#0d1b2a' }}>Essência</h2>
-                <div className={styles.wordGroups}>{wordGroups.map(g => (
-                  <button key={g.id} className={`${styles.wordGroup} ${selectedWords.includes(g.id) ? styles.wordActive : ''}`} onClick={() => setSelectedWords(p => tog(p as unknown as string[], g.id as unknown as string) as unknown as number[])}>
-                    {g.words.map(w => <span key={w} style={{ color: selectedWords.includes(g.id) ? '#fff' : '#0d1b2a' }}>{w}</span>)}
-                  </button>
-                ))}</div>
-              </div>
-            )}
+            {step === wordsStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Essência</h2><div className={styles.wordGroups}>{wordGroups.map(g => (
+              <button key={g.id} className={`${styles.wordGroup} ${selectedWords.includes(g.id) ? styles.wordActive : ''}`} onClick={() => setSelectedWords(p => tog(p, g.id))}>
+                {g.words.map(w => <span key={w} style={{ color: selectedWords.includes(g.id) ? '#fff' : '#0d1b2a' }}>{w}</span>)}
+              </button>
+            ))}</div></div>}
 
-            {step === reviewStep && (
-              <div className={styles.section}>
-                <h2 style={{ color: '#0d1b2a' }}>Finalizar Briefing</h2>
-                <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff', width: '100%' }} onClick={() => router.push(`/dossie/${params.id}`)}>Gerar Dossiê →</button>
-              </div>
-            )}
+            {step === hobbiesStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Estilo de Vida</h2><div className={styles.chipGrid}>{hobbies.map(h => (
+              <button key={h} className={`${styles.chip} ${selectedHobbies.includes(h) ? styles.chipActive : ''}`} onClick={() => setSelectedHobbies(p => tog(p, h))}>{h}</button>
+            ))}</div></div>}
+
+            {step === propertyStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Sobre o Imóvel</h2><div className={styles.formGrid}>{propertyQuestions.map(q => (
+              <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><div className={styles.chipGrid}>{q.options!.map(o => (
+                <button key={o} className={`${styles.chip} ${answers[`p_${q.id}`] === o ? styles.chipActive : ''}`} onClick={() => setA(`p_${q.id}`, o)}>{o}</button>
+              ))}</div></div>
+            ))}</div></div>}
+
+            {step === investStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Investimento</h2><div className={styles.styleGrid}>{investmentLevels.map(lv => (
+              <button key={lv.id} className={`${styles.styleCard} ${selectedInvestment === lv.id ? styles.styleActive : ''}`} style={{ padding: '1.5rem' }} onClick={() => setSelectedInvestment(lv.id)}>
+                <span style={{ fontSize: '2rem' }}>{lv.icon}</span><strong style={{ color: selectedInvestment === lv.id ? '#fff' : '#0d1b2a', marginTop: '0.5rem' }}>{lv.label}</strong>
+              </button>
+            ))}</div></div>}
+
+            {step === prioStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Prioridades</h2><div className={styles.chipGrid}>{priorityItems.map(p => (
+              <button key={p} className={`${styles.chip} ${priorities.includes(p) ? styles.chipActive : ''}`} onClick={() => setPriorities(tog(priorities, p))}>{p}</button>
+            ))}</div></div>}
+
+            {step === dynStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Rotina</h2><div className={styles.formGrid}>{dynamicsQuestions.map(q => (
+              <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><input className="glass-input" style={{ borderColor: 'rgba(13, 27, 42, 0.1)', color: '#0d1b2a' }} value={answers[`d_${q.id}`] || ''} onChange={e => setA(`d_${q.id}`, e.target.value)} /></div>
+            ))}</div></div>}
+
+            {currentRoom && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>{currentRoom.name}</h2><div className={styles.roomBlock}><h3>O que não pode faltar?</h3><textarea className="glass-input" style={{ borderColor: 'rgba(13, 27, 42, 0.1)', color: '#0d1b2a' }} rows={4} value={roomNotes[currentRoom.id] || ''} onChange={e => setRoomNotes((p: any) => ({ ...p, [currentRoom.id]: e.target.value }))} /></div></div>}
+
+            {step === reviewStep && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Finalizar</h2><button className="glass-button" style={{ background: '#0d1b2a', color: '#fff', width: '100%' }} onClick={handleFinish} disabled={isSaving}>{isSaving ? 'Salvando...' : 'Gerar Dossiê →'}</button></div>}
           </motion.div>
         </AnimatePresence>
       </div>
