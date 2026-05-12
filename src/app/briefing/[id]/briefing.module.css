@@ -12,6 +12,9 @@
   position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.5rem; border-bottom: 1px solid rgba(13, 27, 42, 0.05);
 }
+.logoMiniContainer { display: flex; align-items: center; text-decoration: none; }
+.logoMiniFixed { height: 32px; width: auto; object-fit: contain; }
+
 .headerCenter { flex: 1; max-width: 400px; margin: 0 2rem; display: flex; flex-direction: column; gap: 4px; }
 .phaseName { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; font-weight: 500; }
 .progressTrack { height: 3px; border-radius: 10px; overflow: hidden; }
