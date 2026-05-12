@@ -12,12 +12,12 @@ import {
 } from '@/data/briefingData';
 import styles from './briefing.module.css';
 
-const curatedImages = {
-  classico: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1000&auto=format&fit=crop",
-  moderno: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1000&auto=format&fit=crop",
-  industrial: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1000&auto=format&fit=crop",
-  minimalista: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1000&auto=format&fit=crop",
-  luxo: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1000&auto=format&fit=crop"
+// CURADORIA PINTEREST REAL (RS/SC ELITE)
+const pinterestLinks = {
+  classico: "https://i.pinimg.com/originals/06/48/83/064883a98584894cc6a8a7f004b16417.jpg",
+  moderno: "https://i.pinimg.com/originals/a0/4e/f8/a04ef8828677ea363145d2a21bc7cb8a.jpg",
+  industrial: "https://i.pinimg.com/originals/c4/25/71/c42571cd91013c1e5639c3627c83f657.jpg",
+  minimalista: "https://i.pinimg.com/originals/c5/ad/b9/c5adb96068460d4eae6f455d3ffa46ee.jpg"
 };
 
 export default function BriefingPage() {
@@ -33,7 +33,6 @@ export default function BriefingPage() {
   const [priorities, setPriorities] = useState(priorityItems);
   const [roomHabits, setRoomHabits] = useState<any>({});
   const [roomNotes, setRoomNotes] = useState<any>({});
-  const [animDir, setAnimDir] = useState<'next' | 'prev'>('next');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -43,30 +42,198 @@ export default function BriefingPage() {
     }
   }, [params.id]);
 
-  if (!client) return <div className={styles.loading}>Carregando briefing...</div>;
+  if (!client) return <div className={styles.loading}>Sincronizando experiência elite...</div>;
 
   const rooms = (client.rooms || []).map((r: string) => r).filter((r: string) => roomTemplates[r] || r);
-  const styleStart = 1; const styleEnd = styleStart + styleQuestions.length - 1;
-  const wordsStep = styleEnd + 1; const hobbiesStep = wordsStep + 1;
-  const propertyStep = hobbiesStep + 1; const investStep = propertyStep + 1;
-  const prioStep = investStep + 1; const dynStep = prioStep + 1;
-  const roomStart = dynStep + 1; const roomEnd = roomStart + (rooms.length > 0 ? rooms.length - 1 : 0);
-  const reviewStep = (roomEnd || dynStep) + 1; const totalSteps = reviewStep + 1;
+  
+  // MAPA DE ETAPAS FIXO PARA NÃO HAVER ERRO DE RENDERIZAÇÃO
+  const styleStart = 1; 
+  const styleEnd = styleStart + styleQuestions.length - 1; // 1 a 5
+  const wordsStep = styleEnd + 1; // 6
+  const hobbiesStep = wordsStep + 1; // 7
+  const propertyStep = hobbiesStep + 1; // 8
+  const investStep = propertyStep + 1; // 9
+  const prioStep = investStep + 1; // 10
+  const dynStep = prioStep + 1; // 11
+  const roomStart = dynStep + 1; // 12
+  const roomEnd = roomStart + (rooms.length > 0 ? rooms.length - 1 : 0);
+  const reviewStep = roomEnd + 1;
+  const totalSteps = reviewStep + 1;
 
-  const nav = (dir: 'next' | 'prev') => { setAnimDir(dir); setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const getPhase = () => {
+    if (step === 0) return 'Identidade';
+    if (step <= styleEnd) return 'Estilos';
+    if (step <= hobbiesStep) return 'Perfil';
+    if (step <= dynStep) return 'Diretrizes';
+    if (step <= roomEnd) return 'Ambientes';
+    return 'Dossiê';
+  };
+
+  const nav = (dir: 'next' | 'prev') => { 
+    setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const setA = (k: string, v: any) => setAnswers((prev: any) => ({ ...prev, [k]: v }));
   const tog = (arr: any[], item: any) => arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
+
+  const currentRoomKey = rooms[step - roomStart];
+  const currentRoom = roomTemplates[currentRoomKey] || (currentRoomKey ? { name: currentRoomKey, icon: '🏠', habits: [], id: currentRoomKey } : null);
+
+  const handleFinish = async () => {
+    setIsSaving(true);
+    const payload = { 
+      id: params.id, 
+      client_name: client.clientName, 
+      answers: { 
+        family: client,
+        styles: selectedStyles, 
+        words: selectedWords, 
+        hobbies: selectedHobbies, 
+        investment: selectedInvestment, 
+        priorities: priorities,
+        dynamics: answers,
+        rooms: { habits: roomHabits, notes: roomNotes }
+      } 
+    };
+    try { await supabase.from('briefings').upsert(payload); } catch (e) {}
+    localStorage.setItem(`briefing-${params.id}`, JSON.stringify(payload));
+    router.push(`/dossie/${params.id}`);
+  };
+
+  // ======= RENDER ENGINE COMPLETA =======
+  const renderContent = () => {
+    // 0. BOAS VINDAS
+    if (step === 0) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Olá, {client.clientName}!</h2>
+        <p style={{ color: '#0d1b2a', opacity: 0.8 }}>Vamos iniciar o mapeamento do seu novo lar.</p>
+        <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.5rem', borderRadius: '16px', marginTop: '1.5rem', color: '#0d1b2a' }}>
+           <p style={{ marginBottom: '0.5rem' }}><strong>Cônjuge:</strong> {client.spouseName || 'Não informado'}</p>
+           <p><strong>Filhos:</strong> {client.children?.length > 0 ? client.children.map((c: any) => c.name).join(', ') : 'Nenhum informado'}</p>
+        </div>
+      </div>
+    );
+
+    // 1-5. ESTILOS (COM PINTEREST)
+    if (step >= styleStart && step <= styleEnd) {
+      const q = styleQuestions[step - styleStart];
+      return (
+        <div className={styles.section}>
+          <h2 style={{ color: '#0d1b2a' }}>{q.question}</h2>
+          <div className={styles.styleGrid}>
+            {q.options.map((opt: any) => (
+              <button key={opt.id} className={`${styles.styleCard} ${selectedStyles[q.id] === opt.id ? styles.styleActive : ''}`}
+                onClick={() => setSelectedStyles((s: any) => ({ ...s, [q.id]: opt.id }))}>
+                <div className={styles.styleImg}>
+                  <img src={pinterestLinks[opt.id as keyof typeof pinterestLinks] || pinterestLinks.moderno} alt={opt.label} className={styles.stylePhoto} />
+                </div>
+                <div className={styles.styleInfo}><strong>{opt.label}</strong></div>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // 6. PALAVRAS
+    if (step === wordsStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Essência do Projeto</h2>
+        <div className={styles.wordGroups}>{wordGroups.map(g => (
+          <button key={g.id} className={`${styles.wordGroup} ${selectedWords.includes(g.id) ? styles.wordActive : ''}`} onClick={() => setSelectedWords(p => tog(p, g.id))}>
+            {g.words.map(w => <span key={w} style={{ color: selectedWords.includes(g.id) ? '#fff' : '#0d1b2a' }}>{w}</span>)}
+          </button>
+        ))}</div>
+      </div>
+    );
+
+    // 7. HOBBIES
+    if (step === hobbiesStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Estilo de Vida</h2>
+        <p className={styles.desc} style={{ color: '#0d1b2a' }}>Selecione o que faz parte do seu dia a dia:</p>
+        <div className={styles.chipGrid}>{hobbies.map(h => (
+          <button key={h} className={`${styles.chip} ${selectedHobbies.includes(h) ? styles.chipActive : ''}`} onClick={() => setSelectedHobbies(p => tog(p, h))}>{h}</button>
+        ))}</div>
+      </div>
+    );
+
+    // 8. IMÓVEL
+    if (step === propertyStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Sobre o Imóvel</h2>
+        <div className={styles.formGrid}>{propertyQuestions.map(q => (
+          <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><div className={styles.chipGrid}>{q.options!.map(o => (
+            <button key={o} className={`${styles.chip} ${answers[`p_${q.id}`] === o ? styles.chipActive : ''}`} onClick={() => setA(`p_${q.id}`, o)}>{o}</button>
+          ))}</div></div>
+        ))}</div>
+      </div>
+    );
+
+    // 9. INVESTIMENTO
+    if (step === investStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Nível de Investimento</h2>
+        <div className={styles.styleGrid}>{investmentLevels.map(lv => (
+          <button key={lv.id} className={`${styles.styleCard} ${selectedInvestment === lv.id ? styles.styleActive : ''}`} style={{ padding: '2rem', textAlign: 'center' }} onClick={() => setSelectedInvestment(lv.id)}>
+            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '1rem' }}>{lv.icon}</span><strong style={{ color: selectedInvestment === lv.id ? '#fff' : '#0d1b2a' }}>{lv.label}</strong>
+          </button>
+        ))}</div>
+      </div>
+    );
+
+    // 10. PRIORIDADES
+    if (step === prioStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Prioridades do Projeto</h2>
+        <div className={styles.chipGrid}>{priorityItems.map(p => (
+          <button key={p} className={`${styles.chip} ${priorities.includes(p) ? styles.chipActive : ''}`} onClick={() => setPriorities(tog(priorities, p))}>{p}</button>
+        ))}</div>
+      </div>
+    );
+
+    // 11. DINÂMICA
+    if (step === dynStep) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Dinâmica Familiar</h2>
+        <div className={styles.formGrid}>{dynamicsQuestions.map(q => (
+          <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><input className="glass-input" style={{ borderColor: 'rgba(13, 27, 42, 0.1)', color: '#0d1b2a' }} value={answers[`d_${q.id}`] || ''} onChange={e => setA(`d_${q.id}`, e.target.value)} placeholder="Sua resposta..." /></div>
+        ))}</div>
+      </div>
+    );
+
+    // 12-N. AMBIENTES
+    if (currentRoom) return (
+      <div className={styles.section}>
+        <h2 style={{ color: '#0d1b2a' }}>Ambiente: {currentRoom.name} {currentRoom.icon}</h2>
+        <p className={styles.desc} style={{ color: '#0d1b2a' }}>Quais são os hábitos neste espaço?</p>
+        <div className={styles.chipGrid}>{currentRoom.habits.map((h: string) => (
+          <button key={h} className={`${styles.chip} ${(roomHabits[currentRoom.id] || []).includes(h) ? styles.chipActive : ''}`} onClick={() => setRoomHabits((p: any) => ({ ...p, [currentRoom.id]: tog(p[currentRoom.id] || [], h) }))}>{h}</button>
+        ))}</div>
+        <textarea className="glass-input" style={{ marginTop: '1.5rem', borderColor: 'rgba(13, 27, 42, 0.1)', color: '#0d1b2a' }} rows={4} placeholder="Desejos especiais para este ambiente..." value={roomNotes[currentRoom.id] || ''} onChange={e => setRoomNotes((p: any) => ({ ...p, [currentRoom.id]: e.target.value }))} />
+      </div>
+    );
+
+    // FINAL. REVISÃO
+    if (step === reviewStep) return (
+      <div className={styles.section} style={{ textAlign: 'center' }}>
+        <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Briefing Finalizado!</h2>
+        <p style={{ color: '#0d1b2a', marginBottom: '2rem' }}>Clique no botão abaixo para gerar o seu dossiê executivo.</p>
+        <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff', width: '100%', padding: '1.5rem' }} onClick={handleFinish} disabled={isSaving}>{isSaving ? 'Gerando Dossiê...' : 'Ver Dossiê do Projeto ✨'}</button>
+      </div>
+    );
+
+    return null;
+  };
 
   return (
     <main className={styles.main}>
       <div className={styles.bgSpline}><div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div></div>
-      
       <header className={styles.header} style={{ background: 'rgba(255,255,255,0.95)' }}>
-        <Link href="/" className={styles.logoMiniContainer}>
-          <img src="/brand/logo-icon-dark.png" alt="BA" className={styles.logoMiniFixed} />
-        </Link>
+        <Link href="/" className={styles.logoMiniContainer}><img src="/brand/logo-icon-dark.png" alt="BA" className={styles.logoMiniFixed} /></Link>
         <div className={styles.headerCenter}>
-          <span className={styles.phaseName} style={{ color: '#0d1b2a' }}>{step === 0 ? 'Identidade' : 'Briefing'}</span>
+          <span className={styles.phaseName} style={{ color: '#0d1b2a' }}>{getPhase()}</span>
           <div className={styles.progressTrack} style={{ background: 'rgba(13, 27, 42, 0.1)' }}>
             <motion.div className={styles.progressFill} style={{ background: '#0d1b2a' }} animate={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
           </div>
@@ -76,21 +243,8 @@ export default function BriefingPage() {
 
       <div className={styles.content}>
         <AnimatePresence mode="wait">
-          <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-            className={`glass-panel ${styles.card}`} style={{ background: 'rgba(255, 255, 255, 0.95)' }}
-          >
-            {/* Mantendo lógica de renderStepContent anterior... */}
-            {step === 0 && (
-              <div className={styles.section}>
-                <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Olá, {client.clientName}!</h2>
-                <p style={{ color: '#333' }}>Vamos começar o seu projeto.</p>
-                <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.2rem', borderRadius: '12px', marginTop: '1.5rem', color: '#0d1b2a' }}>
-                   <p><strong>Cônjuge:</strong> {client.spouseName || 'Não'}</p>
-                   <p><strong>Filhos:</strong> {client.children?.length > 0 ? client.children.map((c:any)=>c.name).join(', ') : 'Nenhum'}</p>
-                </div>
-              </div>
-            )}
-            {step > 0 && <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Etapa {step}</h2><p style={{ color: '#333' }}>Continuar para o próximo passo...</p></div>}
+          <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className={`glass-panel ${styles.card}`} style={{ background: 'rgba(255, 255, 255, 0.95)' }}>
+            {renderContent()}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -98,7 +252,7 @@ export default function BriefingPage() {
       <footer className={styles.footer} style={{ background: 'rgba(255,255,255,0.95)' }}>
         {step > 0 && <button className={`glass-button ${styles.btnBack}`} style={{ color: '#0d1b2a', borderColor: '#0d1b2a' }} onClick={() => nav('prev')}>← Voltar</button>}
         <div style={{ flex: 1 }} />
-        {step < reviewStep && <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }} onClick={() => nav('next')}>Avançar →</button>}
+        {step < reviewStep && <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }} onClick={() => nav('next')}>Próxima Pergunta →</button>}
       </footer>
     </main>
   );
