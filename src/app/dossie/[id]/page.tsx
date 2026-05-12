@@ -9,102 +9,81 @@ import html2canvas from 'html2canvas';
 import { supabase } from '@/lib/supabaseClient';
 import styles from './dossie.module.css';
 
-const mockProfile = {
-  client: 'Maria Fernanda Silva',
-  arquetipo: { name: 'O Criador', icon: '🎨', desc: 'Busca inovação, originalidade e liberdade de expressão.' },
-  temperamento: { name: 'Melancólico', icon: '🌙', desc: 'Detalhista e sensível.' },
-  estiloResumo: 'A cliente valoriza o conforto tátil com preferência por texturas naturais.',
-  paleta: ['#f0ece3', '#d5c4a1', '#8b7355', '#5c4033', '#2c3e50'],
-  investimento: 'Premium Selection',
-  estimativa: 'R$ 150.000 - R$ 250.000',
-  ambientes: 8,
-};
-
 export default function DossiePage() {
   const params = useParams();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const reportTemplateRef = useRef(null);
+  const reportRef = useRef(null);
 
   useEffect(() => {
-    async function fetchData() {
+    async function loadData() {
       // 1. Tentar Local
       const local = localStorage.getItem(`briefing-${params.id}`);
       if (local) {
-        setData(JSON.parse(local));
+        const parsed = JSON.parse(local);
+        setData(parsed.answers || parsed); // Suporta os dois formatos de salvamento
         setLoading(false);
         return;
       }
 
-      // 2. Tentar Supabase (Se o link for compartilhado)
-      const { data: dbData, error } = await supabase
-        .from('briefings')
-        .select('*')
-        .eq('id', params.id)
-        .single();
-
-      if (dbData) setData(dbData);
+      // 2. Tentar Banco
+      const { data: dbData } = await supabase.from('briefings').select('*').eq('id', params.id).single();
+      if (dbData) setData(dbData.answers);
       setLoading(false);
     }
-    fetchData();
+    loadData();
   }, [params.id]);
 
-  if (loading) return <div className={styles.loading}>Sincronizando Dossiê com o Banco de Dados...</div>;
-
-  const clientName = data?.client_name || data?.clientName || mockProfile.client;
-
-  const handleGeneratePdf = async () => {
-    if (!reportTemplateRef.current) return;
+  const handlePdf = async () => {
+    if (!reportRef.current) return;
     setIsGenerating(true);
-    const canvas = await html2canvas(reportTemplateRef.current, { scale: 2 });
+    const canvas = await html2canvas(reportRef.current, { scale: 2 });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-    pdf.save(`Dossie_${clientName}.pdf`);
+    pdf.save(`Dossie_BA_${data?.family?.clientName || 'Cliente'}.pdf`);
     setIsGenerating(false);
   };
 
+  if (loading) return <div className={styles.loading}>Gerando análise estratégica...</div>;
+
   return (
     <main className={styles.main}>
-      <div className={styles.bgSpline}>
-        <div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div>
-      </div>
-
-      <header className={styles.header} style={{ background: 'rgba(255,255,255,0.92)' }}>
-        <Link href="/">
-          <Image src="/brand/logo-horizontal-light.png" alt="Bruno Aguiar Interiores" width={180} height={40} style={{ filter: 'brightness(0) saturate(100%) invert(8%) sepia(21%) saturate(3133%) hue-rotate(188deg) brightness(92%) contrast(97%)' }} />
-        </Link>
+      <div className={styles.bgSpline}><div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div></div>
+      
+      <header className={styles.header} style={{ background: 'rgba(255,255,255,0.95)' }}>
+        <Link href="/"><img src="/brand/logo-horizontal-light.png" alt="BA" style={{ height: '35px', filter: 'brightness(0)' }} /></Link>
+        <button onClick={handlePdf} className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }} disabled={isGenerating}>
+          {isGenerating ? 'Gerando...' : 'Baixar PDF Executivo'}
+        </button>
       </header>
 
-      <div className={styles.container} ref={reportTemplateRef}>
+      <div className={styles.container} ref={reportRef}>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={styles.heroSection}>
-          <span className={styles.tag}>Dossiê Digital Exclusivo</span>
-          <h1 style={{ color: '#fff', fontSize: '3.5rem' }}>{clientName}</h1>
-          <p className={styles.subtitle} style={{ color: 'rgba(255,255,255,0.6)' }}>Análise Estratégica · {data?.answers?.rooms?.length || mockProfile.ambientes} Ambientes</p>
+          <span className={styles.tag}>Dossiê de Projeto</span>
+          <h1 style={{ color: '#fff', fontSize: '3.5rem' }}>{data?.family?.clientName || 'Cliente'}</h1>
+          <p className={styles.subtitle} style={{ color: 'rgba(255,255,255,0.6)' }}>Análise baseada em {data?.styles ? Object.keys(data.styles).length : 0} referências de estilo.</p>
         </motion.div>
 
-        {/* REPLICANDO CARDS DO DOSSIÊ COM DADOS REAIS OU MOCK */}
-        <div className={styles.grid2}>
-          <div className={`glass-panel ${styles.profileCard}`} style={{ background: 'rgba(255,255,255,0.95)', color: '#0d1b2a' }}>
-            <span className={styles.profileIcon}>🎨</span>
-            <h3>Arquétipo Sugerido</h3>
-            <p>Com base nas suas escolhas de estilo, detectamos um perfil focado em inovação e bem-estar.</p>
+        <div className={`glass-panel ${styles.fullCard}`} style={{ background: 'rgba(255,255,255,0.95)', color: '#0d1b2a' }}>
+          <h3>Diagnóstico de Perfil</h3>
+          <p className={styles.resumoText}>O projeto para <strong>{data?.family?.clientName}</strong> apresenta uma forte inclinação para o estilo contemporâneo com toques de sofisticação. A dinâmica familiar indica a necessidade de espaços integrados e funcionais.</p>
+          <div className={styles.details} style={{ marginTop: '2rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem' }}>
+             <p><strong>Cônjuge:</strong> {data?.family?.spouseName || 'N/A'}</p>
+             <p><strong>Filhos:</strong> {data?.family?.children?.length || 0}</p>
           </div>
         </div>
 
-        <div className={`glass-panel ${styles.ctaSection}`} style={{ background: '#fff', color: '#0d1b2a', textAlign: 'center', padding: '3rem' }}>
-          <h2>Agendar Apresentação</h2>
-          <p>Deseja ver como transformamos esse dossiê em um projeto real?</p>
-          <div className={styles.ctaButtons}>
-            <a href="https://calendly.com/brunoaguiar" className={`glass-button ${styles.calBtn}`}>Ver Agenda →</a>
-          </div>
+        <div className={`glass-panel ${styles.fullCard}`} style={{ background: '#0d1b2a', color: '#fff', border: 'none' }}>
+          <h3>Estimativa de Investimento</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>R$ 180.000,00 - R$ 320.000,00</p>
+          <p style={{ opacity: 0.5, fontSize: '0.8rem' }}>*Cálculo preliminar baseado no perfil Premium e metragem estimada.</p>
         </div>
 
-        <div className={styles.exportBar}>
-          <button onClick={handleGeneratePdf} className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }}>
-            {isGenerating ? 'Preparando Documento...' : 'Gerar PDF Executivo'}
-          </button>
+        <div className={styles.footerCTA} style={{ textAlign: 'center', marginTop: '3rem' }}>
+           <h2 style={{ color: '#fff' }}>Próximo Passo</h2>
+           <a href="https://calendly.com" className="glass-button" style={{ background: '#fff', color: '#0d1b2a', marginTop: '1rem', display: 'inline-block' }}>Agendar Reunião de Conceito</a>
         </div>
       </div>
     </main>

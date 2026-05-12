@@ -12,13 +12,13 @@ import {
 } from '@/data/briefingData';
 import styles from './briefing.module.css';
 
-// LINKS ESTÁVEIS DE ALTA QUALIDADE (ARQUITETURA DE LUXO)
-const curatedLinks = {
-  classico: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1200&auto=format&fit=crop",
-  moderno: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1200&auto=format&fit=crop",
-  industrial: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1200&auto=format&fit=crop",
-  minimalista: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1200&auto=format&fit=crop",
-  contemporaneo: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1200&auto=format&fit=crop"
+// USANDO AS IMAGENS QUE BAIXAMOS PARA A PASTA LOCAL
+const localImages = {
+  classico: "/styles/classico.jpg",
+  moderno: "/styles/moderno.jpg",
+  industrial: "/styles/industrial.jpg",
+  minimalista: "/styles/minimalista.jpg",
+  contemporaneo: "/styles/contemporaneo.jpg"
 };
 
 export default function BriefingPage() {
@@ -43,37 +43,17 @@ export default function BriefingPage() {
     }
   }, [params.id]);
 
-  if (!client) return <div className={styles.loading}>Sincronizando experiência...</div>;
+  if (!client) return <div className={styles.loading}>Sincronizando...</div>;
 
   const rooms = (client.rooms || []).map((r: string) => r).filter((r: string) => roomTemplates[r] || r);
-  
-  const styleStart = 1; 
-  const styleEnd = styleStart + styleQuestions.length - 1;
-  const wordsStep = styleEnd + 1; 
-  const hobbiesStep = wordsStep + 1;
-  const propertyStep = hobbiesStep + 1; 
-  const investStep = propertyStep + 1;
-  const prioStep = investStep + 1; 
-  const dynStep = prioStep + 1;
-  const roomStart = dynStep + 1; 
-  const roomEnd = roomStart + (rooms.length > 0 ? rooms.length - 1 : 0);
-  const reviewStep = roomEnd + 1;
-  const totalSteps = reviewStep + 1;
+  const styleStart = 1; const styleEnd = styleStart + styleQuestions.length - 1;
+  const wordsStep = styleEnd + 1; const hobbiesStep = wordsStep + 1;
+  const propertyStep = hobbiesStep + 1; const investStep = propertyStep + 1;
+  const prioStep = investStep + 1; const dynStep = prioStep + 1;
+  const roomStart = dynStep + 1; const roomEnd = roomStart + (rooms.length > 0 ? rooms.length - 1 : 0);
+  const reviewStep = roomEnd + 1; const totalSteps = reviewStep + 1;
 
-  const getPhase = () => {
-    if (step === 0) return 'Identidade';
-    if (step <= styleEnd) return 'Estilos';
-    if (step <= hobbiesStep) return 'Perfil';
-    if (step <= dynStep) return 'Diretrizes';
-    if (step <= roomEnd) return 'Ambientes';
-    return 'Dossiê';
-  };
-
-  const nav = (dir: 'next' | 'prev') => { 
-    setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+  const nav = (dir: 'next' | 'prev') => { setStep(s => dir === 'next' ? Math.min(s + 1, reviewStep) : Math.max(s - 1, 0)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const setA = (k: string, v: any) => setAnswers((prev: any) => ({ ...prev, [k]: v }));
   const tog = (arr: any[], item: any) => arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
 
@@ -92,9 +72,9 @@ export default function BriefingPage() {
     if (step === 0) return (
       <div className={styles.section}>
         <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Olá, {client.clientName}!</h2>
-        <p style={{ color: '#0d1b2a', opacity: 0.8 }}>Vamos iniciar o seu briefing premium.</p>
-        <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.5rem', borderRadius: '16px', marginTop: '1.5rem', color: '#0d1b2a' }}>
-           <p style={{ marginBottom: '0.5rem' }}><strong>Cônjuge:</strong> {client.spouseName || 'Não informado'}</p>
+        <p style={{ color: '#0d1b2a' }}>Vamos começar o seu briefing.</p>
+        <div className={styles.familyInfo} style={{ background: 'rgba(13, 27, 42, 0.05)', padding: '1.2rem', borderRadius: '12px', marginTop: '1.5rem', color: '#0d1b2a' }}>
+           <p><strong>Cônjuge:</strong> {client.spouseName || 'Não informado'}</p>
            <p><strong>Filhos:</strong> {client.children?.length > 0 ? client.children.map((c: any) => c.name).join(', ') : 'Nenhum'}</p>
         </div>
       </div>
@@ -110,12 +90,7 @@ export default function BriefingPage() {
               <button key={opt.id} className={`${styles.styleCard} ${selectedStyles[q.id] === opt.id ? styles.styleActive : ''}`}
                 onClick={() => setSelectedStyles((s: any) => ({ ...s, [q.id]: opt.id }))}>
                 <div className={styles.styleImg}>
-                  <img 
-                    src={curatedLinks[opt.id as keyof typeof curatedLinks] || curatedLinks.moderno} 
-                    alt={opt.label} 
-                    className={styles.stylePhoto} 
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?q=80&w=1000'; }}
-                  />
+                  <img src={localImages[opt.id as keyof typeof localImages] || localImages.moderno} alt={opt.label} className={styles.stylePhoto} />
                 </div>
                 <div className={styles.styleInfo}><strong>{opt.label}</strong></div>
               </button>
@@ -126,7 +101,7 @@ export default function BriefingPage() {
     }
 
     if (step === wordsStep) return (
-      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Essência do Projeto</h2><div className={styles.wordGroups}>{wordGroups.map(g => (
+      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Essência</h2><div className={styles.wordGroups}>{wordGroups.map(g => (
         <button key={g.id} className={`${styles.wordGroup} ${selectedWords.includes(g.id) ? styles.wordActive : ''}`} onClick={() => setSelectedWords(p => tog(p, g.id))}>
           {g.words.map(w => <span key={w} style={{ color: selectedWords.includes(g.id) ? '#fff' : '#0d1b2a' }}>{w}</span>)}
         </button>
@@ -140,7 +115,7 @@ export default function BriefingPage() {
     );
 
     if (step === propertyStep) return (
-      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Sobre o Imóvel</h2><div className={styles.formGrid}>{propertyQuestions.map(q => (
+      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>O Imóvel</h2><div className={styles.formGrid}>{propertyQuestions.map(q => (
         <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><div className={styles.chipGrid}>{q.options!.map(o => (
           <button key={o} className={`${styles.chip} ${answers[`p_${q.id}`] === o ? styles.chipActive : ''}`} onClick={() => setA(`p_${q.id}`, o)}>{o}</button>
         ))}</div></div>
@@ -148,21 +123,15 @@ export default function BriefingPage() {
     );
 
     if (step === investStep) return (
-      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Nível de Investimento</h2><div className={styles.styleGrid}>{investmentLevels.map(lv => (
-        <button key={lv.id} className={`${styles.styleCard} ${selectedInvestment === lv.id ? styles.styleActive : ''}`} style={{ padding: '2rem', textAlign: 'center' }} onClick={() => setSelectedInvestment(lv.id)}>
-          <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '1rem' }}>{lv.icon}</span><strong style={{ color: selectedInvestment === lv.id ? '#fff' : '#0d1b2a' }}>{lv.label}</strong>
+      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Investimento</h2><div className={styles.styleGrid}>{investmentLevels.map(lv => (
+        <button key={lv.id} className={`${styles.styleCard} ${selectedInvestment === lv.id ? styles.styleActive : ''}`} style={{ padding: '2rem' }} onClick={() => setSelectedInvestment(lv.id)}>
+          <span style={{ fontSize: '2.5rem' }}>{lv.icon}</span><strong style={{ color: selectedInvestment === lv.id ? '#fff' : '#0d1b2a' }}>{lv.label}</strong>
         </button>
       ))}</div></div>
     );
 
-    if (step === prioStep) return (
-      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Prioridades</h2><div className={styles.chipGrid}>{priorityItems.map(p => (
-        <button key={p} className={`${styles.chip} ${priorities.includes(p) ? styles.chipActive : ''}`} onClick={() => setPriorities(tog(priorities, p))}>{p}</button>
-      ))}</div></div>
-    );
-
     if (step === dynStep) return (
-      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Dinâmica</h2><div className={styles.formGrid}>{dynamicsQuestions.map(q => (
+      <div className={styles.section}><h2 style={{ color: '#0d1b2a' }}>Rotina</h2><div className={styles.formGrid}>{dynamicsQuestions.map(q => (
         <div key={q.id} className={styles.field}><label style={{ color: '#0d1b2a' }}>{q.question}</label><input className="glass-input" style={{ borderColor: 'rgba(13, 27, 42, 0.1)', color: '#0d1b2a' }} value={answers[`d_${q.id}`] || ''} onChange={e => setA(`d_${q.id}`, e.target.value)} /></div>
       ))}</div></div>
     );
@@ -179,8 +148,8 @@ export default function BriefingPage() {
 
     if (step === reviewStep) return (
       <div className={styles.section} style={{ textAlign: 'center' }}>
-        <h2 style={{ color: '#0d1b2a', fontSize: '2.5rem' }}>Concluído!</h2>
-        <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff', width: '100%', padding: '1.5rem', marginTop: '2rem' }} onClick={handleFinish} disabled={isSaving}>{isSaving ? 'Salvando...' : 'Ver Dossiê ✨'}</button>
+        <h2 style={{ color: '#0d1b2a' }}>Tudo pronto!</h2>
+        <button className="glass-button" style={{ background: '#0d1b2a', color: '#fff', width: '100%', padding: '1.5rem', marginTop: '2rem' }} onClick={handleFinish} disabled={isSaving}>{isSaving ? 'Gerando Dossiê...' : 'Ver Dossiê do Projeto ✨'}</button>
       </div>
     );
 
@@ -192,12 +161,7 @@ export default function BriefingPage() {
       <div className={styles.bgSpline}><div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div></div>
       <header className={styles.header} style={{ background: 'rgba(255,255,255,0.95)' }}>
         <Link href="/" className={styles.logoMiniContainer}><img src="/brand/logo-icon-dark.png" alt="BA" className={styles.logoMiniFixed} /></Link>
-        <div className={styles.headerCenter}>
-          <span className={styles.phaseName} style={{ color: '#0d1b2a' }}>{getPhase()}</span>
-          <div className={styles.progressTrack} style={{ background: 'rgba(13, 27, 42, 0.1)' }}>
-            <motion.div className={styles.progressFill} style={{ background: '#0d1b2a' }} animate={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
-          </div>
-        </div>
+        <div className={styles.headerCenter}><div className={styles.progressTrack} style={{ background: 'rgba(13, 27, 42, 0.1)' }}><motion.div className={styles.progressFill} style={{ background: '#0d1b2a' }} animate={{ width: `${((step + 1) / totalSteps) * 100}%` }} /></div></div>
         <span className={styles.stepCount} style={{ color: '#0d1b2a' }}>{step + 1}/{totalSteps}</span>
       </header>
       <div className={styles.content}>
