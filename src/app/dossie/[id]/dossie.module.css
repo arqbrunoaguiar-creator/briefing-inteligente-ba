@@ -60,3 +60,18 @@
   .gridStyle, .roomsGrid { grid-template-columns: 1fr; }
   .ctaActions { flex-direction: column; }
 }
+
+/* DATA CARDS */
+.dataCard { background: #f9f9f9; padding: 1.5rem; border-radius: 16px; }
+.dataLabel { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.4; font-weight: 600; }
+.dataValue { font-size: 1.1rem; margin-top: 0.3rem; font-weight: 500; }
+
+/* LOADING & BG */
+.loading { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050505; color: #fff; font-size: 1.1rem; }
+.bgSpline { position: fixed; inset: 0; z-index: 0; }
+.navyBg { position: absolute; inset: 0; overflow: hidden; }
+.blob1, .blob2 { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; }
+.blob1 { width: 500px; height: 500px; background: radial-gradient(circle, #0d1b2a, transparent 70%); top: -10%; left: -10%; }
+.blob2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b263b, transparent 70%); bottom: -5%; right: -5%; }
+.emptyNote { text-align: center; padding: 2rem; opacity: 0.4; }
+.headerActions { display: flex; gap: 1rem; }

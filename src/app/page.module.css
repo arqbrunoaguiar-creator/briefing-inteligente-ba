@@ -141,6 +141,24 @@
   background: transparent;
 }
 
+.lightInput {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(13, 27, 42, 0.12);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #0d1b2a;
+  background: rgba(13, 27, 42, 0.03);
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.lightInput:focus {
+  border-color: #0d1b2a;
+  box-shadow: 0 0 0 3px rgba(13, 27, 42, 0.06);
+}
+.lightInput::placeholder { color: rgba(13, 27, 42, 0.3); }
+
 @media (max-width: 600px) {
   .hero { padding: 3rem 2rem; }
   .formCard { padding: 2rem; }
