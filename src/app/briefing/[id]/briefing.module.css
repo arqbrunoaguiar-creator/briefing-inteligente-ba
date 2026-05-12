@@ -1,0 +1,92 @@
+.main { min-height: 100vh; position: relative; display: flex; flex-direction: column; overflow: hidden; background: #050505; }
+
+/* NAVY BACKGROUND REPLICADO */
+.bgSpline { position: fixed; inset: 0; z-index: 0; }
+.navyBg { position: absolute; inset: 0; overflow: hidden; }
+.blob1, .blob2 { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; animation: float 15s infinite alternate ease-in-out; }
+.blob1 { width: 500px; height: 500px; background: radial-gradient(circle, #0d1b2a 0%, transparent 70%); top: -10%; left: -10%; }
+.blob2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b263b 0%, transparent 70%); bottom: -5%; right: -5%; animation-delay: -3s; }
+@keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 30px) scale(1.1); } }
+
+.header {
+  position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem; border-bottom: 1px solid rgba(13, 27, 42, 0.05);
+}
+.headerCenter { flex: 1; max-width: 400px; margin: 0 2rem; display: flex; flex-direction: column; gap: 4px; }
+.phaseName { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; font-weight: 500; }
+.progressTrack { height: 3px; border-radius: 10px; overflow: hidden; }
+.progressFill { height: 100%; border-radius: 10px; }
+.stepCount { font-size: 0.8rem; font-variant-numeric: tabular-nums; font-weight: 500; }
+
+.content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; position: relative; z-index: 5; }
+.card { width: 100%; max-width: 650px; padding: 2.5rem; border-radius: 32px; min-height: 480px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+
+.section { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.tag { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.8rem; font-weight: 600; }
+.section h2 { font-weight: 400; line-height: 1.2; margin-bottom: 1.2rem; }
+.desc { font-weight: 300; font-size: 1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+
+.explainBox { padding: 1.2rem; border-radius: 16px; border: 1px solid; font-size: 0.95rem; line-height: 1.5; }
+
+.styleGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.styleCard {
+  background: rgba(13, 27, 42, 0.03); border: 1px solid rgba(13, 27, 42, 0.08);
+  border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s;
+  padding: 0; display: flex; flex-direction: column; text-align: left;
+}
+.styleActive { background: #0d1b2a !important; border-color: #0d1b2a !important; }
+.styleActive strong { color: #fff !important; }
+.styleImg { width: 100%; aspect-ratio: 16/10; position: relative; }
+.stylePhoto { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+.styleInfo { padding: 0.8rem 1rem; }
+.styleInfo strong { display: block; color: #0d1b2a; font-weight: 500; font-size: 0.9rem; }
+
+.wordGroups { display: flex; flex-direction: column; gap: 0.8rem; }
+.wordGroup {
+  padding: 1.2rem; border-radius: 14px; background: rgba(13, 27, 42, 0.04);
+  border: 1px solid rgba(13, 27, 42, 0.06); display: flex; flex-wrap: wrap; gap: 0.5rem; cursor: pointer;
+}
+.wordActive { background: #0d1b2a !important; border-color: #0d1b2a !important; }
+.word { font-size: 0.85rem; }
+
+.chipGrid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip {
+  padding: 8px 18px; border-radius: 50px; background: rgba(13, 27, 42, 0.05);
+  border: 1px solid rgba(13, 27, 42, 0.1); color: #0d1b2a;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+}
+.chipActive { background: #0d1b2a !important; color: #fff !important; border-color: #0d1b2a !important; }
+
+.formGrid { display: flex; flex-direction: column; gap: 1.5rem; }
+.field { display: flex; flex-direction: column; gap: 0.6rem; }
+.field label { font-size: 0.8rem; font-weight: 600; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+
+.roomBlock h3 { font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500; }
+
+.footer { position: relative; z-index: 10; display: flex; align-items: center; padding: 1.2rem 2rem; }
+
+.submitBtn { padding: 1rem 2rem; font-size: 1rem; font-weight: 500; border-radius: 12px; }
+
+@media (max-width: 600px) {
+  .card { padding: 1.5rem; border-radius: 24px; }
+  .styleGrid { grid-template-columns: 1fr; }
+}
+
+.iaInsight {
+  background: linear-gradient(135deg, rgba(13, 27, 42, 0.05) 0%, rgba(13, 27, 42, 0.02) 100%);
+  border: 1px solid rgba(13, 27, 42, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #0d1b2a;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.finalBox { display: flex; flex-direction: column; gap: 0.8rem; }
+.finalBox p { font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }

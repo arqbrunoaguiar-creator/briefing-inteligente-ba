@@ -1,0 +1,40 @@
+.main { min-height: 100vh; position: relative; overflow: hidden; padding-bottom: 5rem; background: #050505; }
+
+/* NAVY BACKGROUND REPLICADO */
+.bgSpline { position: fixed; inset: 0; z-index: 0; }
+.navyBg { position: absolute; inset: 0; overflow: hidden; }
+.blob1, .blob2 { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; animation: float 15s infinite alternate ease-in-out; }
+.blob1 { width: 500px; height: 500px; background: radial-gradient(circle, #0d1b2a 0%, transparent 70%); top: -10%; left: -10%; }
+.blob2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b263b 0%, transparent 70%); bottom: -5%; right: -5%; animation-delay: -3s; }
+@keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 30px) scale(1.1); } }
+
+.header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 2rem; border-bottom: 1px solid rgba(13, 27, 42, 0.05);
+}
+.logoLink { display: flex; align-items: center; }
+.headerLabel { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; }
+
+.container { max-width: 1000px; margin: 0 auto; padding: 3rem 1.5rem; position: relative; z-index: 1; }
+
+.tabBar {
+  display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem;
+  border-radius: 16px; margin-bottom: 2rem; scrollbar-width: none;
+}
+.tabBar::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 10px 22px; border-radius: 12px; border: none;
+  font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.heroCard { box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.atemporalTag { 
+  font-size: 0.65rem; padding: 4px 12px; border-radius: 50px; letter-spacing: 2px;
+  display: inline-block; margin-bottom: 1rem; font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .heroCard { padding: 2rem; }
+}

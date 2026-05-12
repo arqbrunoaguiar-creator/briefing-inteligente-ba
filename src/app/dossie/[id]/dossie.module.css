@@ -1,0 +1,56 @@
+.main { min-height: 100vh; position: relative; padding-bottom: 5rem; background: #050505; }
+
+/* NAVY BACKGROUND REPLICADO */
+.bgSpline { position: fixed; inset: 0; z-index: 0; }
+.navyBg { position: absolute; inset: 0; overflow: hidden; }
+.blob1, .blob2 { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; animation: float 15s infinite alternate ease-in-out; }
+.blob1 { width: 500px; height: 500px; background: radial-gradient(circle, #0d1b2a 0%, transparent 70%); top: -10%; left: -10%; }
+.blob2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b263b 0%, transparent 70%); bottom: -5%; right: -5%; animation-delay: -3s; }
+@keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 30px) scale(1.1); } }
+
+.header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 2rem; border-bottom: 1px solid rgba(13, 27, 42, 0.05);
+}
+.logoLink { display: flex; align-items: center; }
+.headerActions { display: flex; gap: 1rem; }
+.shareBtn { 
+  background: transparent; border: 1px solid rgba(13, 27, 42, 0.2); 
+  padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; color: #0d1b2a; 
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2rem; }
+
+.heroSection { text-align: center; margin-bottom: 1rem; }
+.heroSection h1 { font-weight: 300; margin-bottom: 0.5rem; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.profileCard { padding: 2.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; border-radius: 24px; }
+.profileIcon { font-size: 2.5rem; }
+
+.fullCard { padding: 3rem; border-radius: 32px; }
+.resumoText { font-size: 1.1rem; font-weight: 300; line-height: 1.8; margin-bottom: 2rem; }
+
+/* PRICE BOX */
+.priceBox { 
+  background: rgba(255, 255, 255, 0.1); padding: 1.5rem; 
+  border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-block;
+}
+.priceValue { font-size: 1.4rem; font-weight: 600; letter-spacing: 1px; color: #fff; }
+
+/* CTA SECTION */
+.ctaSection { border-radius: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); margin-top: 2rem; }
+.ctaButtons { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+.calBtn, .waBtn { padding: 1rem 2rem; font-size: 1rem; font-weight: 500; border-radius: 12px; }
+.calBtn { background: #0d1b2a; color: #fff; border: none; }
+.waBtn { border: 1px solid #0d1b2a; color: #0d1b2a; background: transparent; }
+
+.exportBar { display: flex; gap: 1rem; justify-content: center; padding: 2rem 0; margin-top: 2rem; }
+
+@media (max-width: 700px) {
+  .heroSection h1 { font-size: 2.8rem; }
+  .grid2 { grid-template-columns: 1fr; }
+  .ctaButtons { flex-direction: column; }
+}
