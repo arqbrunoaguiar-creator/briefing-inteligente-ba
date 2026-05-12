@@ -1,117 +1,66 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { supabase } from '@/lib/supabaseClient';
 import styles from './arquiteto.module.css';
 
-const mockBriefings = [
-  { id: 'abc123', client: 'Maria Fernanda Silva', date: '2026-05-10', status: 'Respondido', rooms: 6 },
-  { id: 'def456', client: 'João Pedro Almeida', date: '2026-05-08', status: 'Pendente', rooms: 4 },
-  { id: 'ghi789', client: 'Ana Carolina Mendes', date: '2026-05-05', status: 'Respondido', rooms: 8 },
-];
+export default function ArquitetoDashboard() {
+  const [briefings, setBriefings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function ArquitetoPage() {
-  const [showModal, setShowModal] = useState(false);
-  const [clientName, setClientName] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
-  const [plantUploaded, setPlantUploaded] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [analyzed, setAnalyzed] = useState(false);
+  useEffect(() => {
+    async function fetchBriefings() {
+      const { data, error } = await supabase
+        .from('briefings')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  const handleUpload = () => {
-    setPlantUploaded(true);
-    setAnalyzing(true);
-    setTimeout(() => { setAnalyzing(false); setAnalyzed(true); }, 3000);
-  };
-
-  const generatedLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/briefing/novo-${Date.now().toString(36)}`;
+      if (data) setBriefings(data);
+      setLoading(false);
+    }
+    fetchBriefings();
+  }, []);
 
   return (
     <main className={styles.main}>
-      <div className={styles.ambientLight1} />
-      <div className={styles.ambientLight2} />
-
-      <header className={styles.header}>
-        <Link href="/" className={styles.logo}>
-          <span className={styles.logoBold}>BRUNO</span><span className={styles.logoLight}>AGUIAR</span>
-        </Link>
-        <span className={styles.headerLabel}>Painel do Arquiteto</span>
-      </header>
-
-      <div className={styles.container}>
-        <div className={styles.topBar}>
-          <h1>Meus Briefings</h1>
-          <button className="glass-button" onClick={() => setShowModal(true)}>+ Novo Briefing</button>
-        </div>
-
-        <div className={styles.briefingList}>
-          {mockBriefings.map(b => (
-            <div key={b.id} className={`glass-panel ${styles.briefingRow}`}>
-              <div className={styles.briefingInfo}>
-                <strong>{b.client}</strong>
-                <span className={styles.meta}>{b.rooms} ambientes · {b.date}</span>
-              </div>
-              <span className={`${styles.status} ${b.status === 'Respondido' ? styles.statusDone : styles.statusPending}`}>
-                {b.status}
-              </span>
-              <div className={styles.actions}>
-                <Link href={`/briefing/${b.id}`} className={styles.actionLink}>Ver Briefing</Link>
-                {b.status === 'Respondido' && <Link href={`/dossie/${b.id}`} className={styles.actionLink}>Ver Dossiê</Link>}
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className={styles.sidebar}>
+        <Image src="/brand/logo-icon-dark.png" alt="BA" width={40} height={40} />
+        <nav className={styles.nav}>
+          <Link href="/arquiteto" className={styles.navActive}>Briefings</Link>
+          <Link href="/">Nova Simulação</Link>
+        </nav>
       </div>
 
-      {showModal && (
-        <div className={styles.overlay} onClick={() => { if (!analyzing) setShowModal(false); }}>
-          <div className={`glass-panel ${styles.modal}`} onClick={e => e.stopPropagation()}>
-            {!analyzed ? (
-              <>
-                <h2>Novo Briefing</h2>
-                <p className={styles.modalDesc}>Preencha os dados do cliente e faça o upload da planta baixa.</p>
-                <div className={styles.modalForm}>
-                  <label>Nome do cliente</label>
-                  <input className="glass-input" placeholder="Nome completo" value={clientName} onChange={e => setClientName(e.target.value)} />
-                  <label>E-mail do cliente</label>
-                  <input className="glass-input" type="email" placeholder="email@cliente.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
-                  <label>Planta Baixa</label>
-                  {!plantUploaded ? (
-                    <div className={styles.uploadZone} onClick={handleUpload}>
-                      <span className={styles.uploadIcon}>📐</span>
-                      <span>Clique para fazer upload da planta</span>
-                      <span className={styles.uploadHint}>PDF, JPG ou PNG</span>
-                    </div>
-                  ) : analyzing ? (
-                    <div className={styles.analyzingBox}>
-                      <div className={styles.spinner} />
-                      <span>IA analisando a planta baixa...</span>
-                      <span className={styles.uploadHint}>Identificando ambientes automaticamente</span>
-                    </div>
-                  ) : null}
+      <div className={styles.content}>
+        <header className={styles.header}>
+          <h1>Gestão de Projetos Elite</h1>
+          <p>Acompanhe e recupere dossiês estratégicos.</p>
+        </header>
+
+        {loading ? (
+          <div className={styles.loading}>Sincronizando com a nuvem...</div>
+        ) : (
+          <div className={styles.grid}>
+            {briefings.map((b) => (
+              <motion.div key={b.id} whileHover={{ y: -5 }} className={`glass-panel ${styles.briefingCard}`}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.date}>{new Date(b.created_at).toLocaleDateString('pt-BR')}</span>
+                  <span className={styles.status}>Finalizado</span>
                 </div>
-              </>
-            ) : (
-              <>
-                <h2>✅ Ambientes Detectados</h2>
-                <p className={styles.modalDesc}>A IA identificou os seguintes ambientes na planta:</p>
-                <div className={styles.detectedRooms}>
-                  {['Suíte Master', 'Cozinha', 'Sala de Estar / Jantar', 'Lavabo', 'Home Office', 'Banheiro', 'Área de Serviço', 'Varanda'].map(r => (
-                    <div key={r} className={styles.detectedRoom}>✓ {r}</div>
-                  ))}
+                <h3>{b.client_name}</h3>
+                <p>{b.answers?.family?.spouseName ? `Família: ${b.client_name} & ${b.answers.family.spouseName}` : 'Projeto Individual'}</p>
+                <div className={styles.cardActions}>
+                  <Link href={`/dossie/${b.id}`} className={styles.viewBtn}>Ver Dossiê</Link>
+                  <button onClick={() => window.open(`/dossie/${b.id}`, '_blank')} className={styles.downloadBtn}>Recuperar PDF</button>
                 </div>
-                <div className={styles.linkBox}>
-                  <label>Link do Briefing para o cliente:</label>
-                  <div className={styles.linkRow}>
-                    <input className="glass-input" readOnly value={generatedLink} />
-                    <button className="glass-button" onClick={() => navigator.clipboard.writeText(generatedLink)}>Copiar</button>
-                  </div>
-                </div>
-                <button className="glass-button" style={{ width: '100%', marginTop: '1rem' }} onClick={() => setShowModal(false)}>Fechar</button>
-              </>
-            )}
+              </motion.div>
+            ))}
+            {briefings.length === 0 && <p className={styles.empty}>Nenhum briefing realizado ainda.</p>}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </main>
   );
 }
