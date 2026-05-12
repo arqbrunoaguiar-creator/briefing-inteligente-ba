@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -18,16 +17,13 @@ export default function DossiePage() {
 
   useEffect(() => {
     async function loadData() {
-      // 1. Tentar Local
       const local = localStorage.getItem(`briefing-${params.id}`);
       if (local) {
         const parsed = JSON.parse(local);
-        setData(parsed.answers || parsed); // Suporta os dois formatos de salvamento
+        setData(parsed.answers || parsed);
         setLoading(false);
         return;
       }
-
-      // 2. Tentar Banco
       const { data: dbData } = await supabase.from('briefings').select('*').eq('id', params.id).single();
       if (dbData) setData(dbData.answers);
       setLoading(false);
@@ -38,53 +34,122 @@ export default function DossiePage() {
   const handlePdf = async () => {
     if (!reportRef.current) return;
     setIsGenerating(true);
-    const canvas = await html2canvas(reportRef.current, { scale: 2 });
+    const canvas = await html2canvas(reportRef.current, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-    pdf.save(`Dossie_BA_${data?.family?.clientName || 'Cliente'}.pdf`);
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Dossie_BA_${data?.family?.clientName || 'Projeto'}.pdf`);
     setIsGenerating(false);
   };
 
-  if (loading) return <div className={styles.loading}>Gerando análise estratégica...</div>;
+  if (loading) return <div className={styles.loading}>Sincronizando Dossiê Elite...</div>;
+
+  const clientName = data?.family?.clientName || data?.client_name || "Cliente";
 
   return (
     <main className={styles.main}>
       <div className={styles.bgSpline}><div className={styles.navyBg}><div className={styles.blob1}></div><div className={styles.blob2}></div></div></div>
       
-      <header className={styles.header} style={{ background: 'rgba(255,255,255,0.95)' }}>
-        <Link href="/"><img src="/brand/logo-horizontal-light.png" alt="BA" style={{ height: '35px', filter: 'brightness(0)' }} /></Link>
-        <button onClick={handlePdf} className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }} disabled={isGenerating}>
-          {isGenerating ? 'Gerando...' : 'Baixar PDF Executivo'}
-        </button>
+      <header className={styles.header}>
+        <Link href="/arquiteto" className={styles.backLink}>← Dashboard</Link>
+        <div className={styles.headerActions}>
+          <button onClick={handlePdf} className="glass-button" style={{ background: '#0d1b2a', color: '#fff' }} disabled={isGenerating}>
+            {isGenerating ? 'Processando PDF...' : 'Exportar Dossiê PDF'}
+          </button>
+        </div>
       </header>
 
-      <div className={styles.container} ref={reportRef}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={styles.heroSection}>
-          <span className={styles.tag}>Dossiê de Projeto</span>
-          <h1 style={{ color: '#fff', fontSize: '3.5rem' }}>{data?.family?.clientName || 'Cliente'}</h1>
-          <p className={styles.subtitle} style={{ color: 'rgba(255,255,255,0.6)' }}>Análise baseada em {data?.styles ? Object.keys(data.styles).length : 0} referências de estilo.</p>
-        </motion.div>
-
-        <div className={`glass-panel ${styles.fullCard}`} style={{ background: 'rgba(255,255,255,0.95)', color: '#0d1b2a' }}>
-          <h3>Diagnóstico de Perfil</h3>
-          <p className={styles.resumoText}>O projeto para <strong>{data?.family?.clientName}</strong> apresenta uma forte inclinação para o estilo contemporâneo com toques de sofisticação. A dinâmica familiar indica a necessidade de espaços integrados e funcionais.</p>
-          <div className={styles.details} style={{ marginTop: '2rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem' }}>
-             <p><strong>Cônjuge:</strong> {data?.family?.spouseName || 'N/A'}</p>
-             <p><strong>Filhos:</strong> {data?.family?.children?.length || 0}</p>
+      <div className={styles.document} ref={reportRef}>
+        {/* CAPA ELITE */}
+        <section className={styles.cover}>
+          <img src="/brand/logo-full-dark.png" alt="BA" className={styles.coverLogo} />
+          <div className={styles.coverTitle}>
+            <span className={styles.clientTag}>Briefing Estratégico</span>
+            <h1>{clientName}</h1>
+            <p>Dossiê de Conceito e Viabilidade de Interiores</p>
           </div>
-        </div>
+          <div className={styles.coverFooter}>
+            <span>BRUNO AGUIAR INTERIORES © 2024</span>
+            <span>{new Date().toLocaleDateString('pt-BR')}</span>
+          </div>
+        </section>
 
-        <div className={`glass-panel ${styles.fullCard}`} style={{ background: '#0d1b2a', color: '#fff', border: 'none' }}>
-          <h3>Estimativa de Investimento</h3>
-          <p style={{ fontSize: '1.5rem', fontWeight: '600' }}>R$ 180.000,00 - R$ 320.000,00</p>
-          <p style={{ opacity: 0.5, fontSize: '0.8rem' }}>*Cálculo preliminar baseado no perfil Premium e metragem estimada.</p>
-        </div>
+        {/* DIAGNÓSTICO DE ESTILO */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionNumber}>01</span>
+            <h2>DNA Visual</h2>
+          </div>
+          <div className={styles.gridStyle}>
+            <div className={styles.archetypeCard}>
+              <h3>O Arquétipo do Lar</h3>
+              <p>A análise das referências escolhidas aponta para um perfil que valoriza a <strong>atemporalidade</strong> e o <strong>equilíbrio</strong>. Há uma clara preferência por texturas naturais integradas a um acabamento contemporâneo de luxo.</p>
+              <div className={styles.iaInsight}>
+                <span>✨ Insight de IA:</span>
+                <p>Sua inclinação para espaços amplos e paleta sóbria sugere uma busca por clareza mental e ordem através da arquitetura.</p>
+              </div>
+            </div>
+            <div className={styles.moodSummary}>
+              <div className={styles.moodItem}><span>Paleta Dominante:</span> <strong>Navy, Noir e Off-White</strong></div>
+              <div className={styles.moodItem}><span>Materiais:</span> <strong>Madeira Natural, Quartzo e Couro</strong></div>
+            </div>
+          </div>
+        </section>
 
-        <div className={styles.footerCTA} style={{ textAlign: 'center', marginTop: '3rem' }}>
-           <h2 style={{ color: '#fff' }}>Próximo Passo</h2>
-           <a href="https://calendly.com" className="glass-button" style={{ background: '#fff', color: '#0d1b2a', marginTop: '1rem', display: 'inline-block' }}>Agendar Reunião de Conceito</a>
-        </div>
+        {/* DETALHAMENTO DE AMBIENTES */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionNumber}>02</span>
+            <h2>Escaneamento de Ambientes</h2>
+          </div>
+          <div className={styles.roomsGrid}>
+            {(data?.rooms?.notes && Object.keys(data.rooms.notes).length > 0) ? Object.keys(data.rooms.notes).map((roomId) => (
+              <div key={roomId} className={styles.roomCard}>
+                <h4>{roomId.replace('-', ' ').toUpperCase()}</h4>
+                <p>{data.rooms.notes[roomId]}</p>
+                {data.rooms.habits?.[roomId] && (
+                  <div className={styles.roomHabits}>
+                    {data.rooms.habits[roomId].map((h: string) => <span key={h}>{h}</span>)}
+                  </div>
+                )}
+              </div>
+            )) : <p className={styles.emptyNote}>Nenhum detalhe específico inserido por ambiente.</p>}
+          </div>
+        </section>
+
+        {/* INVESTIMENTO E VIABILIDADE */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionNumber}>03</span>
+            <h2>Viabilidade Financeira</h2>
+          </div>
+          <div className={styles.investCard}>
+            <div className={styles.investInfo}>
+              <p>Perfil de Investimento Selecionado:</p>
+              <h3>PREMIUM / LUXO</h3>
+            </div>
+            <div className={styles.investRange}>
+              <div className={styles.rangeBar}><div className={styles.rangeFill} style={{ width: '85%' }}></div></div>
+              <div className={styles.rangeLabels}>
+                <span>Estimado: R$ 250k</span>
+                <span>Teto: R$ 450k</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CALL TO ACTION FINAL */}
+        <section className={styles.finalCta}>
+          <h2>Pronto para materializar?</h2>
+          <p>O próximo passo é a reunião de conceituação para alinhar os detalhes técnicos deste dossiê.</p>
+          <div className={styles.ctaActions}>
+            <button className={styles.primaryCta}>Agendar Reunião de Conceito</button>
+            <button className={styles.secondaryCta}>Falar com Bruno via WhatsApp</button>
+          </div>
+        </section>
       </div>
     </main>
   );
