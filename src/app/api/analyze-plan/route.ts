@@ -2,105 +2,93 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const maxDuration = 30;
 
-const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
-
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
 
-    if (!file) {
-      return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
-    }
+    if (!file) return NextResponse.json({ error: 'Nenhum arquivo' }, { status: 400 });
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({
-        rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'home-office', 'banheiro', 'area-servico', 'varanda'],
-        analysis: 'Modo simulado — GEMINI_API_KEY não configurada.',
-        simulated: true,
-      });
-    }
+    const openAiKey = process.env.OPENAI_API_KEY;
+    const geminiKey = process.env.GEMINI_API_KEY;
 
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
     const mimeType = file.type || 'image/jpeg';
 
-    const prompt = `Analise esta planta baixa e identifique os ambientes.
-Responda APENAS um JSON: {"rooms": ["suite-master", "cozinha"], "analysis": "..."}
-Chaves: suite-master, cozinha, sala-estar, lavabo, home-office, banheiro, area-servico, varanda, quarto`;
+    const prompt = `Analise esta planta baixa e identifique os cômodos. 
+    Retorne APENAS um JSON: {"rooms": ["suite-master", "cozinha", "sala-estar", "lavabo", "home-office", "banheiro", "area-servico", "varanda", "quarto"], "analysis": "Descrição curta"}`;
 
-    // LISTA DE MODELOS PARA TENTAR (Fallback se um estiver sem cota)
-    const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
-    
-    let lastError = '';
-
-    for (const model of models) {
+    // 1. TENTAR OPENAI (Se a chave existir)
+    if (openAiKey) {
       try {
-        console.log(`Tentando modelo: ${model}`);
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
+        console.log("Tentando OpenAI GPT-4o-mini...");
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: prompt },
+                  { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64}` } }
+                ]
+              }
+            ],
+            response_format: { type: "json_object" }
+          })
+        });
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-              contents: [{ parts: [
-                { inline_data: { mime_type: mimeType, data: base64 } },
-                { text: prompt },
-              ]}],
-              generationConfig: { temperature: 0.1 },
-            }),
-          }
-        );
-
-        clearTimeout(timeout);
-
-        if (response.status === 429) {
-          lastError = `Cota esgotada no modelo ${model}.`;
-          continue; // Tenta o próximo modelo
+        if (res.ok) {
+          const result = await res.json();
+          const parsed = JSON.parse(result.choices[0].message.content);
+          return NextResponse.json({ ...parsed, simulated: false, provider: 'openai' });
         }
-
-        if (!response.ok) {
-          lastError = `Erro no modelo ${model} (Status ${response.status}).`;
-          continue;
-        }
-
-        const result = await response.json();
-        const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-        let parsed;
-        try {
-          const jsonStr = textContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-          parsed = JSON.parse(jsonStr);
-        } catch {
-          const roomMatches = textContent.match(/"(suite-master|cozinha|sala-estar|lavabo|home-office|banheiro|area-servico|varanda|quarto)"/g);
-          parsed = roomMatches ? { rooms: [...new Set(roomMatches.map((m: string) => m.replace(/"/g, '')))] } : null;
-        }
-
-        if (parsed?.rooms?.length) {
-          return NextResponse.json({ rooms: parsed.rooms, analysis: parsed.analysis || 'Planta analisada com sucesso.', simulated: false });
-        }
-      } catch (err) {
-        lastError = `Falha na conexão com ${model}.`;
+      } catch (e) {
+        console.error("OpenAI falhou, tentando Gemini...", e);
       }
     }
 
-    // Se todos os modelos falharem
+    // 2. FALLBACK PARA GEMINI (Se OpenAI falhar ou não tiver chave)
+    if (geminiKey) {
+      try {
+        console.log("Tentando Gemini Fallback...");
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { inline_data: { mime_type: mimeType, data: base64 } },
+              { text: prompt }
+            ]}]
+          })
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          const text = result.candidates[0].content.parts[0].text;
+          const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          const parsed = JSON.parse(jsonStr);
+          return NextResponse.json({ ...parsed, simulated: false, provider: 'gemini' });
+        }
+      } catch (e) {
+        console.error("Gemini também falhou");
+      }
+    }
+
+    // 3. SE TUDO FALHAR
     return NextResponse.json({
-      rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'banheiro', 'area-servico'],
-      analysis: 'As cotas gratuitas do Gemini para hoje foram atingidas. Ambientes padrão carregados. (Dica: habilite o billing no AI Studio para uso ilimitado).',
-      simulated: true,
+      rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
+      analysis: 'Não foi possível analisar agora. Por favor, selecione os cômodos manualmente.',
+      simulated: true
     });
 
   } catch (error) {
-    return NextResponse.json({
-      rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
-      analysis: 'Erro no servidor. Ambientes básicos carregados.',
-      simulated: true,
-    });
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
   }
 }
