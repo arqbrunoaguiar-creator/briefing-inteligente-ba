@@ -61,7 +61,6 @@ export default function Home() {
     setScanProgress([]);
     setAiAnalysis('');
 
-    // Feedback visual progressivo enquanto a IA trabalha
     const msgs = ['Carregando imagem...', 'Enviando para análise de IA...', 'Identificando paredes e divisões...', 'Mapeando ambientes...'];
     let msgIdx = 0;
     const progressInterval = setInterval(() => {
@@ -71,6 +70,9 @@ export default function Home() {
       }
     }, 1200);
 
+    let finalRooms: string[] = [];
+    let finalAnalysis = '';
+
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -79,31 +81,32 @@ export default function Home() {
       const result = await res.json();
 
       clearInterval(progressInterval);
+      setScanProgress(msgs); // Mostra todas as msgs
 
       if (result.rooms && result.rooms.length > 0) {
-        // Mostrar rooms detectados um a um
         for (let i = 0; i < result.rooms.length; i++) {
-          await new Promise(r => setTimeout(r, 400));
+          await new Promise(r => setTimeout(r, 350));
           setDetectedRooms(prev => [...prev, result.rooms[i]]);
         }
-        setSelectedRooms(result.rooms);
-        setAiAnalysis(result.analysis || '');
-        if (result.simulated) setAiAnalysis('Detecção simulada — configure a chave GEMINI_API_KEY para análise real.');
+        finalRooms = result.rooms;
+        finalAnalysis = result.analysis || '';
+        if (result.simulated) finalAnalysis = result.analysis || 'Detecção simulada.';
       } else {
-        // Fallback
-        setDetectedRooms(ROOM_LIST.map(r => ROOM_MAP[r]));
-        setSelectedRooms(ROOM_LIST.map(r => ROOM_MAP[r]));
-        setAiAnalysis('Não foi possível analisar a planta. Ambientes padrão carregados.');
+        finalRooms = Object.values(ROOM_MAP);
+        finalAnalysis = 'Não foi possível analisar a planta. Ambientes padrão carregados.';
       }
     } catch (err) {
       clearInterval(progressInterval);
-      // Fallback em caso de erro
-      setDetectedRooms(ROOM_LIST.map(r => ROOM_MAP[r]));
-      setSelectedRooms(ROOM_LIST.map(r => ROOM_MAP[r]));
-      setAiAnalysis('Erro na conexão com a IA. Ambientes padrão carregados.');
+      finalRooms = Object.values(ROOM_MAP);
+      finalAnalysis = 'Erro na conexão. Ambientes padrão carregados.';
     }
 
-    setTimeout(() => { setAnalyzing(false); setPhase('rooms'); }, 800);
+    // Esperar 1s para o usuário ver os resultados, depois ir para rooms
+    setSelectedRooms(finalRooms);
+    setAiAnalysis(finalAnalysis);
+    await new Promise(r => setTimeout(r, 1200));
+    setAnalyzing(false);
+    setPhase('rooms');
   };
 
   const toggleRoom = (roomKey: string) => {
@@ -194,26 +197,52 @@ export default function Home() {
           <motion.div key="plant" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.formWrap}>
             <div className={`glass-panel ${styles.formCard}`} style={{ background: 'rgba(255,255,255,0.95)', minHeight: '420px', position: 'relative', overflow: 'hidden' }}>
               <h2 style={{ color: '#0d1b2a', fontWeight: 400 }}>Análise de Planta IA</h2>
-              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*,application/pdf" onChange={handleFileChange} />
+              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} />
 
               {!analyzing ? (
-                <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer', border: '2px dashed rgba(13,27,42,0.25)', padding: '3.5rem 2rem', borderRadius: '20px', textAlign: 'center', color: '#0d1b2a', transition: 'border-color 0.3s' }}>
-                  <span style={{ fontSize: '3rem', display: 'block', marginBottom: '1rem' }}>📐</span>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>Clique para selecionar a planta baixa</p>
-                  <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>PDF, JPG ou PNG</p>
-                </div>
+                <>
+                  <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer', border: '2px dashed rgba(13,27,42,0.25)', padding: '2.5rem 2rem', borderRadius: '20px', textAlign: 'center', color: '#0d1b2a', transition: 'border-color 0.3s' }}>
+                    <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>📐</span>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>Clique para enviar a planta baixa</p>
+                    <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>JPG, PNG ou WebP · máx 4MB</p>
+                  </div>
+
+                  {/* INSTRUÇÕES PARA A IA */}
+                  <div style={{ marginTop: '1.2rem', background: 'rgba(13,27,42,0.03)', padding: '1rem 1.2rem', borderRadius: '14px', color: '#0d1b2a' }}>
+                    <p style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', opacity: 0.7 }}>📋 Para a IA ler bem a planta:</p>
+                    <ul style={{ fontSize: '0.78rem', opacity: 0.6, lineHeight: 1.7, paddingLeft: '1.2rem', margin: 0 }}>
+                      <li>Envie uma <strong>foto ou screenshot nítida</strong> (não PDF)</li>
+                      <li>Planta com <strong>nomes dos cômodos visíveis</strong> é ideal</li>
+                      <li>Boa iluminação, sem sombras ou reflexos</li>
+                      <li>Resolução mínima: 800×600 pixels</li>
+                    </ul>
+                  </div>
+
+                  {/* BOTÃO PULAR */}
+                  <button onClick={() => {
+                    setSelectedRooms(Object.values(ROOM_MAP));
+                    setAiAnalysis('Ambientes padrão carregados. Desmarque os que não se aplicam.');
+                    setPhase('rooms');
+                  }} style={{ marginTop: '1rem', width: '100%', background: 'transparent', border: '1px solid rgba(13,27,42,0.15)', color: '#0d1b2a', padding: '0.7rem', borderRadius: '10px', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.6 }}>
+                    Não tenho a planta — selecionar ambientes manualmente
+                  </button>
+                </>
               ) : (
-                <div style={{ position: 'relative', padding: '1.5rem 0' }}>
-                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent, #0d1b2a, transparent)', animation: 'scanLine 1.5s ease-in-out infinite' }} />
+                <div style={{ padding: '1.5rem 0' }}>
+                  <div style={{ height: '3px', background: 'rgba(13,27,42,0.08)', borderRadius: '10px', overflow: 'hidden', marginBottom: '1.5rem' }}>
+                    <div style={{ height: '100%', background: '#0d1b2a', width: detectedRooms.length > 0 ? '90%' : '40%', transition: 'width 1s ease', borderRadius: '10px' }} />
+                  </div>
+
                   {scanProgress.map((msg, i) => (
                     <motion.p key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                       style={{ color: '#0d1b2a', fontSize: '0.8rem', opacity: 0.5, marginBottom: '4px' }}>
                       ⏳ {msg}
                     </motion.p>
                   ))}
+
                   {detectedRooms.length > 0 && (
                     <div style={{ marginTop: '1rem', borderTop: '1px solid rgba(13,27,42,0.08)', paddingTop: '1rem' }}>
-                      <p style={{ color: '#0d1b2a', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.8rem', opacity: 0.4 }}>Ambientes Detectados</p>
+                      <p style={{ color: '#0d1b2a', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.8rem', opacity: 0.4 }}>Ambientes Detectados pela IA</p>
                       {detectedRooms.map((roomId, i) => {
                         const label = Object.entries(ROOM_MAP).find(([, v]) => v === roomId)?.[0] || roomId;
                         return (
@@ -228,7 +257,6 @@ export default function Home() {
                   )}
                 </div>
               )}
-              <style>{`@keyframes scanLine { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }`}</style>
             </div>
           </motion.div>
         )}
