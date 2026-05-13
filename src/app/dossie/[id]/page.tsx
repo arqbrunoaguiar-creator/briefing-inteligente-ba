@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { supabase } from '@/lib/supabaseClient';
@@ -90,7 +89,7 @@ export default function DossiePage() {
       <div className={styles.document} ref={reportRef}>
         {/* CAPA */}
         <section className={styles.cover}>
-          <img src="/brand/BRUNO-AGUIAR-VERTICAL---BRANCA.png" alt="Bruno Aguiar" style={{ height: '80px', marginBottom: '3rem' }} />
+          <img src="/brand/BRUNO-AGUIAR-VERTICAL2---BRANCA.png" alt="Bruno Aguiar" style={{ height: '80px', marginBottom: '3rem' }} />
           {data?.client_photo ? (
             <img src={data.client_photo} alt={data.client_name} style={{ width: '180px', height: '180px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #fff' }} />
           ) : (

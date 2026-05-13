@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     setLoading(false);
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (password === 'ba2025') {
       localStorage.setItem('ba_admin_auth', 'true');
@@ -67,8 +67,9 @@ export default function AdminDashboard() {
       <header className={styles.header}>
         <img src="/brand/BRUNO-AGUIAR-HORIZONTAL---AZUL.png" alt="Bruno Aguiar Interiores" className={styles.logo} style={{ height: '35px' }} />
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <Link href="/moodboard" className={styles.btnAction} style={{ background: 'rgba(20,32,43,0.06)', color: 'var(--navy)', padding: '0.8rem 1.5rem', textDecoration: 'none' }}>Moodboards</Link>
           <Link href="/admin/novo" className={styles.btnNew}>+ NOVO CLIENTE</Link>
-          <button onClick={() => { localStorage.removeItem('ba_admin_auth'); setIsAuthenticated(false); }} className={styles.btnAction_secondary} style={{ padding: '0.8rem' }}>Sair</button>
+          <button onClick={() => { localStorage.removeItem('ba_admin_auth'); setIsAuthenticated(false); }} className={styles.btnAction_secondary} style={{ padding: '0.8rem 1.2rem' }}>Sair</button>
         </div>
       </header>
 
@@ -83,11 +84,18 @@ export default function AdminDashboard() {
         </select>
       </div>
 
-      {loading ? <p>Carregando...</p> : (
+      {loading ? (
+        <div className={styles.loadingState}>Carregando clientes...</div>
+      ) : (
         <div className={styles.clientGrid}>
           <AnimatePresence>
+            {filtered.length === 0 && (
+              <div className={styles.emptyState}>
+                <p>Nenhum cliente encontrado.</p>
+              </div>
+            )}
             {filtered.map(b => (
-              <motion.div key={b.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={styles.card}>
+              <motion.div key={b.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={styles.card}>
                 <div className={`${styles.statusIndicator} ${styles['status_' + (b.status || 'pre')]}`} />
                 <div className={styles.cardHeader}>
                   {b.client_photo ? (
@@ -103,7 +111,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className={styles.cardActions}>
                   <Link href={`/briefing/${b.id}`} className={`${styles.btnAction} ${styles.btnAction_primary}`}>
-                    {b.status === 'pre' ? 'Iniciar Briefing' : 'Continuar'}
+                    {b.status === 'pre' ? 'Iniciar Briefing' : b.status === 'con' ? 'Ver Briefing' : 'Continuar'}
                   </Link>
                   <Link href={`/dossie/${b.id}`} className={`${styles.btnAction} ${styles.btnAction_secondary}`}>Ver Dossiê</Link>
                 </div>

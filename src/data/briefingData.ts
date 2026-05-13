@@ -21,50 +21,50 @@ export const styleQuestions: StyleQuestion[] = [
     id: 1, question: "Qual atmosfera de sala mais combina com sua essência?",
     context: "Sinta a energia do espaço.",
     options: [
-      { id: 'min', label: 'Minimalista', description: 'Tons neutros, linhas retas, paz visual', gradient: 'linear-gradient(135deg, #f0ece3, #dcd5c4)', image: '/styles/estilo_minimalista_sala.png' },
-      { id: 'ind', label: 'Industrial', description: 'Concreto, metal, força urbana', gradient: 'linear-gradient(135deg, #4a4a4a, #2c2c2c)', image: '/styles/estilo_industrial_sala.png' },
-      { id: 'cla', label: 'Clássico', description: 'Elegância, molduras, toque de ouro', gradient: 'linear-gradient(135deg, #c9a96e, #8b7332)', image: '/styles/estilo_classico_sala.png' },
-      { id: 'con', label: 'Contemporâneo', description: 'Sofisticação, texturas, design atual', gradient: 'linear-gradient(135deg, #2c3e50, #4a6274)', image: '/styles/estilo_contemporaneo_sala.png' },
+      { id: 'min', label: 'Minimalista', description: 'Tons neutros, linhas retas, paz visual', gradient: 'linear-gradient(135deg, #f0ece3, #dcd5c4)', image: '/styles/q1_min.png' },
+      { id: 'ind', label: 'Industrial', description: 'Concreto, metal, força urbana', gradient: 'linear-gradient(135deg, #4a4a4a, #2c2c2c)', image: '/styles/q1_ind.png' },
+      { id: 'cla', label: 'Clássico', description: 'Elegância, molduras, toque de ouro', gradient: 'linear-gradient(135deg, #c9a96e, #8b7332)', image: '/styles/q1_cla.png' },
+      { id: 'con', label: 'Contemporâneo', description: 'Sofisticação, texturas, design atual', gradient: 'linear-gradient(135deg, #2c3e50, #4a6274)', image: '/styles/q1_con.png' },
     ]
   },
   {
     id: 2, question: "Qual cozinha desperta sua criatividade?",
     context: "Pense na funcionalidade unida à estética.",
     options: [
-      { id: 'gou', label: 'Gourmet Moderna', description: 'Ilha, mármore escuro, alta tecnologia', gradient: 'linear-gradient(135deg, #2d2d2d, #1a1a1a)', image: '/styles/estilo_cozinha_gourmet.png' },
-      { id: 'cla', label: 'Provençal', description: 'Charme clássico, tons claros, acolhimento', gradient: 'linear-gradient(135deg, #d4c5a9, #b8a88a)', image: '/styles/estilo_cozinha_provencal.png' },
-      { id: 'min', label: 'Minimalista Clean', description: 'Superfícies contínuas, sem ruído visual', gradient: 'linear-gradient(135deg, #fafafa, #e0e0e0)', image: '/styles/estilo_minimalista_sala.png' }, // Reuso estratégico
-      { id: 'lux', label: 'Alto Luxo', description: 'Materiais nobres, marcenaria de autor', gradient: 'linear-gradient(135deg, #1c1c1c, #0d0d0d)', image: '/styles/estilo_contemporaneo_sala.png' },
+      { id: 'gou', label: 'Gourmet Moderna', description: 'Ilha, mármore escuro, alta tecnologia', gradient: 'linear-gradient(135deg, #2d2d2d, #1a1a1a)', image: '/styles/q2_mid.png' },
+      { id: 'cla', label: 'Provençal', description: 'Charme clássico, tons claros, acolhimento', gradient: 'linear-gradient(135deg, #d4c5a9, #b8a88a)', image: '/styles/q2_boh.png' },
+      { id: 'min', label: 'Minimalista Clean', description: 'Superfícies contínuas, sem ruído visual', gradient: 'linear-gradient(135deg, #fafafa, #e0e0e0)', image: '/styles/q2_min.png' },
+      { id: 'lux', label: 'Alto Luxo', description: 'Materiais nobres, marcenaria de autor', gradient: 'linear-gradient(135deg, #1c1c1c, #0d0d0d)', image: '/styles/q2_esc.png' },
     ]
   },
   {
     id: 3, question: "Como você imagina seu refúgio de descanso?",
     context: "Onde você recarrega suas energias.",
     options: [
-      { id: 'ser', label: 'Sereno', description: 'Linhos, tons crus, paz absoluta', gradient: 'linear-gradient(135deg, #efebe9, #d7ccc8)', image: '/styles/estilo_quarto_sereno.png' },
-      { id: 'dra', label: 'Dramático', description: 'Veludos, cores profundas, luxo noturno', gradient: 'linear-gradient(135deg, #1a237e, #283593)', image: '/styles/estilo_quarto_dramatico.png' },
-      { id: 'zen', label: 'Minimalista Zen', description: 'Serenidade japonesa, madeira clara', gradient: 'linear-gradient(135deg, #e0d8c0, #c8bfa0)', image: '/styles/estilo_quarto_zen.png' },
-      { id: 'lof', label: 'Loft Urbano', description: 'Concreto, metal, estilo industrial', gradient: 'linear-gradient(135deg, #616161, #424242)', image: '/styles/estilo_quarto_loft.png' },
+      { id: 'ser', label: 'Sereno', description: 'Linhos, tons crus, paz absoluta', gradient: 'linear-gradient(135deg, #efebe9, #d7ccc8)', image: '/styles/q3_rom.png' },
+      { id: 'dra', label: 'Dramático', description: 'Veludos, cores profundas, luxo noturno', gradient: 'linear-gradient(135deg, #1a237e, #283593)', image: '/styles/q3_lux.png' },
+      { id: 'zen', label: 'Minimalista Zen', description: 'Serenidade japonesa, madeira clara', gradient: 'linear-gradient(135deg, #e0d8c0, #c8bfa0)', image: '/styles/q3_rus.png' },
+      { id: 'lof', label: 'Loft Urbano', description: 'Concreto, metal, estilo industrial', gradient: 'linear-gradient(135deg, #616161, #424242)', image: '/styles/q3_urb.png' },
     ]
   },
   {
     id: 4, question: "Qual destes climas mais te atrai para o quarto?",
     context: "Sinta a textura dos materiais.",
     options: [
-      { id: 'nat', label: 'Natural Orgânico', description: 'Fibras, plantas, tons terra', gradient: 'linear-gradient(135deg, #a5d6a7, #66bb6a)', image: '/styles/estilo_quarto_natural.png' },
-      { id: 'lux', label: 'Suíte de Hotel 5★', description: 'Luxo absoluto, enxoval premium', gradient: 'linear-gradient(135deg, #263238, #37474f)', image: '/styles/estilo_quarto_hotel.png' },
-      { id: 'esc', label: 'Escandinavo', description: 'Branco quente, funcional, luminoso', gradient: 'linear-gradient(135deg, #fafaf0, #f0ece0)', image: '/styles/estilo_escandinavo_sala.png' },
-      { id: 'mod', label: 'Contemporâneo', description: 'Design limpo, atual, tecnológico', gradient: 'linear-gradient(135deg, #263238, #37474f)', image: '/styles/estilo_contemporaneo_sala.png' },
+      { id: 'nat', label: 'Natural Orgânico', description: 'Fibras, plantas, tons terra', gradient: 'linear-gradient(135deg, #a5d6a7, #66bb6a)', image: '/styles/q4_col.png' },
+      { id: 'lux', label: 'Suíte de Hotel 5★', description: 'Luxo absoluto, enxoval premium', gradient: 'linear-gradient(135deg, #263238, #37474f)', image: '/styles/q4_gou.png' },
+      { id: 'esc', label: 'Escandinavo', description: 'Branco quente, funcional, luminoso', gradient: 'linear-gradient(135deg, #fafaf0, #f0ece0)', image: '/styles/q4_cla.png' },
+      { id: 'mod', label: 'Contemporâneo', description: 'Design limpo, atual, tecnológico', gradient: 'linear-gradient(135deg, #263238, #37474f)', image: '/styles/q4_min.png' },
     ]
   },
   {
     id: 5, question: "Qual experiência de banho você busca?",
     context: "O seu momento de spa privado.",
     options: [
-      { id: 'spa', label: 'Spa Natural', description: 'Pedras, madeira, conexão com a natureza', gradient: 'linear-gradient(135deg, #a1887f, #8d6e63)', image: '/styles/estilo_banheiro_spa.png' },
-      { id: 'lux', label: 'Luxo Moderno', description: 'Mármore, metais dourados, sofisticação', gradient: 'linear-gradient(135deg, #eceff1, #cfd8dc)', image: '/styles/estilo_banheiro_luxo.png' },
-      { id: 'min', label: 'Minimalista', description: 'Limpo, funcional, iluminação cênica', gradient: 'linear-gradient(135deg, #1e1e1e, #333)', image: '/styles/estilo_minimalista_sala.png' },
-      { id: 'ind', label: 'Industrial Chic', description: 'Metais pretos, concreto, espelhos redondos', gradient: 'linear-gradient(135deg, #546e7a, #455a64)', image: '/styles/estilo_industrial_sala.png' },
+      { id: 'spa', label: 'Spa Natural', description: 'Pedras, madeira, conexão com a natureza', gradient: 'linear-gradient(135deg, #a1887f, #8d6e63)', image: '/styles/q5_ind.png' },
+      { id: 'lux', label: 'Luxo Moderno', description: 'Mármore, metais dourados, sofisticação', gradient: 'linear-gradient(135deg, #eceff1, #cfd8dc)', image: '/styles/classico.jpg' },
+      { id: 'min', label: 'Minimalista', description: 'Limpo, funcional, iluminação cênica', gradient: 'linear-gradient(135deg, #1e1e1e, #333)', image: '/styles/minimalista.jpg' },
+      { id: 'ind', label: 'Industrial Chic', description: 'Metais pretos, concreto, espelhos redondos', gradient: 'linear-gradient(135deg, #546e7a, #455a64)', image: '/styles/industrial.jpg' },
     ]
   },
 ];
@@ -165,5 +165,25 @@ export const roomTemplates: Record<string, RoomTemplate> = {
     id: 'banheiro', name: 'Banheiro', icon: '🛁',
     habits: ['Ritual Spa'],
     equipment: ['Banheira', 'Nicho iluminado'],
+  },
+  'lavabo': {
+    id: 'lavabo', name: 'Lavabo', icon: '🚿',
+    habits: ['Visitas', 'Uso rápido'],
+    equipment: ['Espelho de design', 'Torneira de destaque'],
+  },
+  'home-office': {
+    id: 'home-office', name: 'Home Office', icon: '💻',
+    habits: ['Trabalho concentrado', 'Videochamadas'],
+    equipment: ['Mesa ampla', 'Iluminação profissional', 'Estante'],
+  },
+  'area-servico': {
+    id: 'area-servico', name: 'Área de Serviço', icon: '🫧',
+    habits: ['Lavar roupa', 'Passar'],
+    equipment: ['Máquina de lavar', 'Secadora', 'Tanque'],
+  },
+  'varanda': {
+    id: 'varanda', name: 'Varanda Gourmet', icon: '🌿',
+    habits: ['Churrascos', 'Café da manhã', 'Relaxar'],
+    equipment: ['Churrasqueira', 'Mesa de jantar externa', 'Vegetal / Jardim'],
   },
 };

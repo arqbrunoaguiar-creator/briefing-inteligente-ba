@@ -3,6 +3,7 @@ export interface StyleMoodboard {
   name: string;
   subtitle: string;
   description: string;
+  image?: string;
   palette: string[];
   paletteNames: string[];
   materials: {
@@ -18,6 +19,7 @@ export const styleMoodboards: StyleMoodboard[] = [
     id: 'minimalista',
     name: 'Minimalista',
     subtitle: 'Menos é mais',
+    image: '/styles/minimalista.jpg',
     description: 'Ambientes limpos e funcionais onde cada peça tem propósito. Linhas retas, superfícies contínuas e ausência de excessos. O silêncio visual como protagonista.',
     palette: ['#FFFFFF', '#F5F0EB', '#C4B9A8', '#8C7E6A', '#2C2C2C'],
     paletteNames: ['Branco Puro', 'Areia', 'Linho', 'Terra Quente', 'Carvão'],
@@ -35,6 +37,7 @@ export const styleMoodboards: StyleMoodboard[] = [
     id: 'classico',
     name: 'Clássico Contemporâneo',
     subtitle: 'Elegância atemporal',
+    image: '/styles/classico.jpg',
     description: 'A sofisticação dos elementos clássicos traduzida para a linguagem atual. Molduras, simetria e materiais nobres em composições refinadas.',
     palette: ['#F8F4EF', '#C9A96E', '#5C4B35', '#1C1C2E', '#8B7332'],
     paletteNames: ['Pérola', 'Dourado', 'Nogueira', 'Azul Noite', 'Ouro Velho'],
@@ -52,6 +55,7 @@ export const styleMoodboards: StyleMoodboard[] = [
     id: 'moderno',
     name: 'Moderno / Contemporâneo',
     subtitle: 'Sofisticação atual',
+    image: '/styles/moderno.jpg',
     description: 'O equilíbrio entre ousadia e refinamento. Mix de materiais, texturas contrastantes e uma curadoria precisa de peças que dialogam entre si.',
     palette: ['#1A1A1A', '#333333', '#8C8C8C', '#E8E4DE', '#C17D3C'],
     paletteNames: ['Preto Grafite', 'Chumbo', 'Cinza Médio', 'Off-White', 'Couro Caramelo'],
@@ -86,6 +90,7 @@ export const styleMoodboards: StyleMoodboard[] = [
     id: 'industrial',
     name: 'Industrial',
     subtitle: 'Caráter bruto e autêntico',
+    image: '/styles/industrial.jpg',
     description: 'A beleza do inacabado. Estruturas aparentes, materiais crus e uma estética que celebra a honestidade construtiva dos espaços.',
     palette: ['#2C2C2C', '#6B6B6B', '#A0522D', '#B87333', '#D4C9B0'],
     paletteNames: ['Concreto Escuro', 'Aço', 'Tijolo', 'Cobre', 'Areia'],

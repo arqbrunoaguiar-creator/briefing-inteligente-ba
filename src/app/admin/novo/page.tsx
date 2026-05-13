@@ -16,9 +16,7 @@ export default function NovoCliente() {
     situation: 'Pronto para reformar',
     observations: ''
   });
-  const [floorPlan, setFloorPlan] = useState<File | null>(null);
-
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -59,7 +57,7 @@ export default function NovoCliente() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>NOVO PRÉ-CADASTRO</h1>
+        <h1 style={{ color: 'var(--navy)', fontWeight: 700, letterSpacing: '-1px', fontSize: '1.8rem' }}>NOVO PRÉ-CADASTRO</h1>
         <button type="button" onClick={() => router.back()} className={styles.btnAction_secondary} style={{ padding: '0.8rem 2rem', borderRadius: '12px' }}>Voltar</button>
       </header>
 
