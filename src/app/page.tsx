@@ -197,24 +197,24 @@ export default function Home() {
           <motion.div key="plant" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.formWrap}>
             <div className={`glass-panel ${styles.formCard}`} style={{ background: 'rgba(255,255,255,0.95)', minHeight: '420px', position: 'relative', overflow: 'hidden' }}>
               <h2 style={{ color: '#0d1b2a', fontWeight: 400 }}>Análise de Planta IA</h2>
-              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} />
+              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/jpeg,image/png,image/webp,application/pdf" onChange={handleFileChange} />
 
               {!analyzing ? (
                 <>
                   <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer', border: '2px dashed rgba(13,27,42,0.25)', padding: '2.5rem 2rem', borderRadius: '20px', textAlign: 'center', color: '#0d1b2a', transition: 'border-color 0.3s' }}>
                     <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>📐</span>
                     <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>Clique para enviar a planta baixa</p>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>JPG, PNG ou WebP · máx 4MB</p>
+                    <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '0.5rem' }}>JPG, PNG, WebP ou PDF · máx 4MB</p>
                   </div>
 
                   {/* INSTRUÇÕES PARA A IA */}
                   <div style={{ marginTop: '1.2rem', background: 'rgba(13,27,42,0.03)', padding: '1rem 1.2rem', borderRadius: '14px', color: '#0d1b2a' }}>
                     <p style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', opacity: 0.7 }}>📋 Para a IA ler bem a planta:</p>
                     <ul style={{ fontSize: '0.78rem', opacity: 0.6, lineHeight: 1.7, paddingLeft: '1.2rem', margin: 0 }}>
-                      <li>Envie uma <strong>foto ou screenshot nítida</strong> (não PDF)</li>
-                      <li>Planta com <strong>nomes dos cômodos visíveis</strong> é ideal</li>
-                      <li>Boa iluminação, sem sombras ou reflexos</li>
-                      <li>Resolução mínima: 800×600 pixels</li>
+                      <li>Envie <strong>imagem nítida ou PDF</strong> da planta</li>
+                      <li>Planta com <strong>nomes dos cômodos visíveis</strong> dá melhor resultado</li>
+                      <li>Evite fotos com sombras, reflexos ou ângulo torto</li>
+                      <li>Máximo 4MB — reduza se necessário</li>
                     </ul>
                   </div>
 

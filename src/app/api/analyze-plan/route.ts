@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Permite até 60s no plano Pro, 10s no Free
 export const maxDuration = 30;
+
+// Helper: esperar N ms
+const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +15,6 @@ export async function POST(req: NextRequest) {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-
     if (!apiKey) {
       return NextResponse.json({
         rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'home-office', 'banheiro', 'area-servico', 'varanda'],
@@ -22,108 +23,105 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Converter para base64 — limitar a 4MB para evitar timeout
+    // Validar tamanho (máx 4MB)
     const bytes = await file.arrayBuffer();
     if (bytes.byteLength > 4 * 1024 * 1024) {
       return NextResponse.json({
         rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'home-office', 'banheiro', 'area-servico', 'varanda'],
-        analysis: 'Arquivo muito grande (máx 4MB). Ambientes padrão carregados.',
+        analysis: 'Arquivo muito grande (máx 4MB). Reduza a resolução e tente novamente.',
         simulated: true,
       });
     }
 
     const base64 = Buffer.from(bytes).toString('base64');
+    const mimeType = file.type || 'image/jpeg';
 
-    // Forçar mime type para imagem (Gemini não aceita PDF)
-    let mimeType = file.type || 'image/jpeg';
-    if (mimeType === 'application/pdf') {
-      return NextResponse.json({
-        rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'home-office', 'banheiro', 'area-servico', 'varanda'],
-        analysis: 'PDF não suportado para análise visual. Por favor envie JPG ou PNG. Ambientes padrão carregados.',
-        simulated: true,
-      });
-    }
+    const prompt = `Analise esta planta baixa de imóvel e identifique os ambientes/cômodos visíveis.
 
-    // Chamada ao Gemini
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { inline_data: { mime_type: mimeType, data: base64 } },
-              { text: `Analise esta planta baixa de imóvel e identifique os ambientes/cômodos visíveis.
-
-Responda SOMENTE com um JSON puro (sem markdown, sem \`\`\`):
+Responda SOMENTE com um JSON puro (sem markdown, sem crases):
 {"rooms": ["suite-master", "cozinha"], "analysis": "Descrição breve em português"}
 
-Chaves válidas para rooms:
-suite-master, cozinha, sala-estar, lavabo, home-office, banheiro, area-servico, varanda, quarto
+Chaves válidas: suite-master, cozinha, sala-estar, lavabo, home-office, banheiro, area-servico, varanda, quarto
+Inclua APENAS os ambientes que identificar. Se houver 2 banheiros, coloque "banheiro" apenas uma vez.`;
 
-Inclua APENAS os que você identificar na planta. Se houver 2 banheiros, coloque "banheiro" apenas uma vez.` },
-            ],
-          }],
-          generationConfig: { temperature: 0.1 },
-        }),
+    // Tentar até 2x com retry em caso de 429
+    let lastError = '';
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt > 0) await wait(5000); // Espera 5s antes de tentar de novo
+
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [
+                { inline_data: { mime_type: mimeType, data: base64 } },
+                { text: prompt },
+              ]}],
+              generationConfig: { temperature: 0.1 },
+            }),
+          }
+        );
+
+        clearTimeout(timeout);
+
+        if (response.status === 429) {
+          lastError = 'Limite de requisições atingido. Aguarde 1 minuto e tente novamente.';
+          continue; // Tenta de novo
+        }
+
+        if (!response.ok) {
+          lastError = `Erro na API (${response.status})`;
+          continue;
+        }
+
+        const result = await response.json();
+        const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+        // Parsear JSON
+        let parsed;
+        try {
+          const jsonStr = textContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          parsed = JSON.parse(jsonStr);
+        } catch {
+          // Regex fallback
+          const roomMatches = textContent.match(/"(suite-master|cozinha|sala-estar|lavabo|home-office|banheiro|area-servico|varanda|quarto)"/g);
+          parsed = roomMatches
+            ? { rooms: [...new Set(roomMatches.map((m: string) => m.replace(/"/g, '')))], analysis: 'Detecção parcial.' }
+            : null;
+        }
+
+        if (parsed?.rooms?.length) {
+          return NextResponse.json({ rooms: parsed.rooms, analysis: parsed.analysis || '', simulated: false });
+        }
+
+        lastError = 'IA não conseguiu identificar ambientes nesta imagem.';
+        continue;
+
+      } catch (err: any) {
+        if (err?.name === 'AbortError') {
+          lastError = 'Timeout na análise. Tente com uma imagem menor.';
+        } else {
+          lastError = 'Erro de conexão com a IA.';
+        }
+        continue;
       }
-    );
-
-    clearTimeout(timeout);
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Gemini error:', response.status, errText);
-      return NextResponse.json({
-        rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
-        analysis: `Erro na API (${response.status}). Ambientes básicos carregados.`,
-        simulated: true,
-      });
     }
 
-    const result = await response.json();
-    const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    let parsed;
-    try {
-      const jsonStr = textContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-      parsed = JSON.parse(jsonStr);
-    } catch {
-      console.error('Parse error. Raw text:', textContent);
-      // Tenta extrair rooms via regex como último recurso
-      const roomMatches = textContent.match(/"(suite-master|cozinha|sala-estar|lavabo|home-office|banheiro|area-servico|varanda|quarto)"/g);
-      if (roomMatches) {
-        parsed = {
-          rooms: [...new Set(roomMatches.map((m: string) => m.replace(/"/g, '')))],
-          analysis: 'Detecção parcial realizada.',
-        };
-      } else {
-        parsed = {
-          rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
-          analysis: 'IA não retornou formato esperado. Ambientes básicos carregados.',
-        };
-      }
-    }
-
+    // Se todas as tentativas falharam, retorna fallback com a mensagem
     return NextResponse.json({
-      rooms: parsed.rooms || [],
-      analysis: parsed.analysis || '',
-      simulated: false,
+      rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
+      analysis: lastError + ' Ambientes básicos carregados.',
+      simulated: true,
     });
 
-  } catch (error: any) {
-    if (error?.name === 'AbortError') {
-      return NextResponse.json({
-        rooms: ['suite-master', 'cozinha', 'sala-estar', 'lavabo', 'banheiro', 'area-servico'],
-        analysis: 'Timeout na análise. Ambientes comuns carregados automaticamente.',
-        simulated: true,
-      });
-    }
+  } catch (error) {
     console.error('Erro no endpoint:', error);
     return NextResponse.json({
       rooms: ['suite-master', 'cozinha', 'sala-estar', 'banheiro'],
