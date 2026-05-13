@@ -1,14 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* Apple Light Theme Aesthetic */
+  --bg-main: #ebedf2; /* Fundo cinza ultra suave, estilo macOS */
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-glass: rgba(255, 255, 255, 0.8);
+  
+  /* Brand Colors */
   --navy: #14202B;
   --navy-light: #2a3d4f;
-  --glass: rgba(255, 255, 255, 0.85);
-  --glass-navy: rgba(20, 32, 43, 0.9);
-  --radius: 24px;
-  --shadow: 0 10px 30px rgba(20, 32, 43, 0.1);
-  --transition: all 0.3s ease;
+  --text-main: #1c1c1e;
+  --text-muted: #8e8e93;
+  
+  /* Shapes & Shadows */
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+  --shadow-premium: 0 30px 60px rgba(20, 32, 43, 0.08);
+  --shadow-subtle: 0 10px 30px rgba(20, 32, 43, 0.04);
+  --border-light: 1px solid rgba(255, 255, 255, 0.8);
+  
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -18,18 +31,22 @@
 }
 
 body {
-  background: var(--bg-gradient);
-  background-attachment: fixed;
-  color: var(--navy);
-  font-family: 'Inter', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-.liquid-glass {
-  background: var(--glass);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+/* Base Inputs */
+input, select, textarea {
+  font-family: inherit;
+}
+
+.glass-panel {
+  background: var(--card-glass);
+  backdrop-filter: blur(25px) saturate(200%);
+  -webkit-backdrop-filter: blur(25px) saturate(200%);
+  border: var(--border-light);
+  box-shadow: var(--shadow-premium);
 }

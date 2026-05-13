@@ -51,7 +51,7 @@ export default function AdminDashboard() {
     return (
       <div className={styles.loginWrap}>
         <div className={styles.loginCard}>
-          <img src="/brand/logo-full-dark.png" alt="BA" style={{ width: '120px', marginBottom: '2rem' }} />
+          <img src="/brand/BRUNO-AGUIAR-VERTICAL---AZUL.png" alt="BA" style={{ width: '150px', marginBottom: '2rem' }} />
           <h2>Acesso Restrito</h2>
           <form onSubmit={handleLogin}>
             <input type="password" placeholder="Senha" value={password} onChange={e => setPassword(e.target.value)} />
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <img src="/brand/logo-full-dark.png" alt="Bruno Aguiar Interiores" className={styles.logo} />
+        <img src="/brand/BRUNO-AGUIAR-HORIZONTAL---AZUL.png" alt="Bruno Aguiar Interiores" className={styles.logo} style={{ height: '35px' }} />
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <Link href="/admin/novo" className={styles.btnNew}>+ NOVO CLIENTE</Link>
           <button onClick={() => { localStorage.removeItem('ba_admin_auth'); setIsAuthenticated(false); }} className={styles.btnAction_secondary} style={{ padding: '0.8rem' }}>Sair</button>

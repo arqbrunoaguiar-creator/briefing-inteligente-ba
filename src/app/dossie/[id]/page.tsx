@@ -90,10 +90,11 @@ export default function DossiePage() {
       <div className={styles.document} ref={reportRef}>
         {/* CAPA */}
         <section className={styles.cover}>
+          <img src="/brand/BRUNO-AGUIAR-VERTICAL---BRANCA.png" alt="Bruno Aguiar" style={{ height: '80px', marginBottom: '3rem' }} />
           {data?.client_photo ? (
-            <img src={data.client_photo} alt={data.client_name} style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '5px solid #C4973D' }} />
+            <img src={data.client_photo} alt={data.client_name} style={{ width: '180px', height: '180px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #fff' }} />
           ) : (
-            <div style={{ width: '150px', height: '150px', borderRadius: '50%', background: '#C4973D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: '#14202B' }}>
+            <div style={{ width: '150px', height: '150px', borderRadius: '50%', background: '#f4f5f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: '#14202B' }}>
               {data?.client_name?.[0]}
             </div>
           )}
