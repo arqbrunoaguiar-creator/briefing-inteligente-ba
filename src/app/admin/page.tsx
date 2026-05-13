@@ -65,8 +65,19 @@ export default function AdminDashboard() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>GERENCIAMENTO DE CLIENTES</h1>
-        <Link href="/admin/novo" className={styles.btnNew}>+ NOVO CLIENTE</Link>
+        <img src="/brand/logo-full-dark.png" alt="Bruno Aguiar Interiores" className={styles.logo} />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <input 
+            type="text" 
+            placeholder="Buscar por nome..." 
+            className={styles.btnAction_secondary} 
+            style={{ width: '250px', padding: '0.8rem', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.1)' }}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <Link href="/admin/novo" className={styles.btnNew}>+ NOVO CLIENTE</Link>
+          <button onClick={() => { localStorage.removeItem('ba_admin_auth'); setIsAuthenticated(false); }} className={styles.btnAction_secondary} style={{ padding: '0.8rem' }}>Sair</button>
+        </div>
       </header>
 
       <div className={styles.filters}>

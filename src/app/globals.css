@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --apple-bg: #F5F5F7;
-  --apple-navy: #14202B;
-  --liquid-glass: rgba(255, 255, 255, 0.7);
-  --liquid-glass-dark: rgba(20, 32, 43, 0.85);
-  --border-glass: 1px solid rgba(255, 255, 255, 0.4);
-  --shadow-apple: 0 20px 40px rgba(0, 0, 0, 0.08);
-  --radius-apple: 22px;
-  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --navy: #14202B;
+  --navy-light: #2a3d4f;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-navy: rgba(20, 32, 43, 0.9);
+  --radius: 24px;
+  --shadow: 0 10px 30px rgba(20, 32, 43, 0.1);
+  --transition: all 0.3s ease;
 }
 
 * {
@@ -18,35 +18,18 @@
 }
 
 body {
-  background: #F5F5F7; /* Apple Neutral Background */
-  background: radial-gradient(circle at 50% 0%, #ffffff 0%, #F5F5F7 100%);
-  color: var(--apple-navy);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--navy);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
 }
 
 .liquid-glass {
-  background: var(--liquid-glass);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border: var(--border-glass);
-  border-radius: var(--radius-apple);
-  box-shadow: var(--shadow-apple);
-}
-
-.btn-apple {
-  background: var(--apple-navy);
-  color: #fff;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 500;
-  transition: var(--transition);
-  border: none;
-  cursor: pointer;
-}
-
-.btn-apple:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
