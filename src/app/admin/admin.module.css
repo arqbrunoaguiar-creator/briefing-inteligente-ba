@@ -22,23 +22,41 @@
   color: #C4973D;
 }
 
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+.btnNew {
+  background: #C4973D;
+  color: #14202B;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
-.statCard {
+.btnNew:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(196, 151, 61, 0.4);
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.searchInput {
   background: rgba(255,255,255,0.05);
-  padding: 1.5rem;
-  border-radius: 15px;
   border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  width: 300px;
 }
 
-.briefingGrid {
+.clientGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
@@ -47,11 +65,8 @@
   color: #14202B;
   border-radius: 20px;
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: transform 0.3s ease;
   position: relative;
+  transition: transform 0.3s ease;
   overflow: hidden;
 }
 
@@ -59,10 +74,25 @@
   transform: translateY(-5px);
 }
 
+.statusIndicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+}
+
+/* Status Colors */
+.status_pre { background: #3498db; }    /* Azul */
+.status_pro { background: #f1c40f; }    /* Amarelo */
+.status_con { background: #2ecc71; }    /* Verde */
+.status_arc { background: #bdc3c7; }    /* Branco/Cinza */
+
 .cardHeader {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .avatar {
@@ -70,90 +100,53 @@
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  background: #C4973D;
+  background: #f0f0f0;
+  border: 2px solid #C4973D;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
   font-weight: bold;
-  font-size: 1.2rem;
+  color: #14202B;
 }
 
-.cardBody h3 {
+.cardInfo h3 {
   margin: 0;
   font-size: 1.1rem;
 }
 
-.cardBody p {
+.cardInfo p {
   margin: 0.2rem 0;
-  font-size: 0.85rem;
-  opacity: 0.7;
+  font-size: 0.8rem;
+  opacity: 0.6;
 }
 
-.tag {
+.archetypeTag {
   background: #14202B;
   color: #C4973D;
   padding: 4px 10px;
   border-radius: 50px;
   font-size: 0.7rem;
   font-weight: 600;
+  margin-top: 0.5rem;
   display: inline-block;
 }
 
 .cardActions {
   display: flex;
   gap: 0.5rem;
-  margin-top: auto;
+  margin-top: 1rem;
 }
 
-.btnPrimary {
-  background: #14202B;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 0.8rem;
+.btnAction {
   flex: 1;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-align: center;
   text-decoration: none;
-}
-
-.btnSecondary {
-  background: #C4973D;
-  color: #14202B;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 600;
 }
 
-.loginWrap {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #050505;
-}
-
-.loginCard {
-  background: #fff;
-  padding: 3rem;
-  border-radius: 25px;
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  color: #14202B;
-}
-
-.loginCard input {
-  width: 100%;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 1rem;
-  outline: none;
-}
+.btnAction_primary { background: #14202B; color: #fff; }
+.btnAction_secondary { background: #C4973D; color: #14202B; }
