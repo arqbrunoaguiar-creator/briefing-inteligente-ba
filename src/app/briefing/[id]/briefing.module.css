@@ -1,128 +1,90 @@
 .container {
   min-height: 100vh;
-  background: #050505;
-  color: #fff;
   padding: 2rem;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
 }
 
 .progressHeader {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .progressBar {
   width: 100%;
-  height: 4px;
-  background: rgba(255,255,255,0.1);
+  height: 6px;
+  background: rgba(20, 32, 43, 0.1);
   border-radius: 10px;
+  margin-top: 1rem;
   overflow: hidden;
 }
 
 .progressBar div {
   height: 100%;
-  background: #C4973D;
+  background: var(--navy);
   transition: width 0.3s ease;
 }
 
 .mainLayout {
   display: grid;
-  grid-template-columns: 1fr 350px;
+  grid-template-columns: 1fr 380px;
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
-  align-items: start;
 }
 
-/* CARD PRINCIPAL DE CONTEÚDO */
 .section {
-  background: #fff;
-  color: #14202B;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 3rem;
   border-radius: 30px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 15px 35px rgba(20,32,43,0.05);
+  min-height: 600px;
+  color: var(--navy);
 }
 
 .section h2 {
   font-size: 1.8rem;
-  font-weight: 300;
+  font-weight: 600;
   margin-bottom: 2rem;
-  color: #14202B;
-  border-left: 4px solid #C4973D;
-  padding-left: 1.5rem;
+  color: var(--navy);
 }
 
-/* INPUTS PREMIUM */
-.inputAdmin {
-  width: 100%;
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  padding: 1rem 1.5rem;
-  border-radius: 15px;
-  font-size: 1rem;
-  color: #14202B;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.inputAdmin:focus {
-  border-color: #C4973D;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(196, 151, 61, 0.1);
-}
-
-/* PAINEL DE ANOTAÇÕES DO ARQUITETO */
 .adminNotes {
-  background: rgba(20, 32, 43, 0.95);
-  border: 1px solid rgba(196, 151, 61, 0.3);
-  padding: 1.5rem;
-  border-radius: 20px;
+  background: var(--navy);
+  color: #fff;
+  padding: 2rem;
+  border-radius: 24px;
   position: sticky;
   top: 2rem;
+  box-shadow: 0 15px 35px rgba(20,32,43,0.2);
 }
 
 .adminNotes h4 {
-  color: #C4973D;
-  font-size: 0.75rem;
+  color: #fff;
+  opacity: 0.6;
+  font-size: 0.7rem;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-  text-transform: uppercase;
 }
 
 .adminNotes textarea {
   width: 100%;
-  height: 300px;
-  background: rgba(255,255,255,0.05);
+  height: 350px;
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: 16px;
+  padding: 1.5rem;
   color: #fff;
-  font-size: 0.9rem;
-  resize: none;
+  font-size: 1rem;
   outline: none;
-  line-height: 1.5;
+  resize: none;
 }
 
-.adminNotes textarea:focus {
-  border-color: #C4973D;
-}
-
-/* BOTÕES DE NAVEGAÇÃO */
 .actions {
   max-width: 1200px;
   margin: 2rem auto;
-  width: 100%;
   display: flex;
   justify-content: space-between;
 }
@@ -132,61 +94,16 @@
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   border: none;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-}
-
-.btnNav:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
-
-/* GRID DE ESTILOS E CHIPS */
-.styleGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.chipGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-top: 1rem;
-}
-
-.chip {
-  background: #f0f0f0;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 50px;
-  color: #14202B;
-  cursor: pointer;
   transition: all 0.2s;
 }
 
-.chipActive {
-  background: #14202B;
-  color: #fff;
-}
-
-.avatarLarge {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: #C4973D;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  color: #fff;
-  overflow: hidden;
-}
-
-.avatarLarge img {
+.inputAdmin {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background: #fff;
+  border: 1px solid rgba(20,32,43,0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  color: var(--navy);
+  outline: none;
 }

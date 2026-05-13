@@ -1,94 +1,72 @@
 .main {
-  background: #050505;
+  background: #f5f7fa;
   min-height: 100vh;
-  padding: 2rem;
-  color: #fff;
+  padding: 3rem 2rem;
 }
 
 .document {
   max-width: 900px;
   margin: 0 auto;
   background: #fff;
-  color: #14202B;
+  color: var(--navy);
   border-radius: 0;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(20, 32, 43, 0.1);
 }
 
 .cover {
-  height: 1000px;
-  background: #14202B;
-  color: #C4973D;
+  height: 900px;
+  background: var(--navy);
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
-  text-align: center;
   padding: 4rem;
+  text-align: center;
 }
 
 .cover h1 {
   font-size: 4rem;
   font-weight: 300;
-  margin-top: 2rem;
   letter-spacing: 5px;
-  text-transform: uppercase;
+  margin-top: 2rem;
 }
 
 .section {
   padding: 4rem;
-  border-bottom: 1px solid rgba(20, 32, 43, 0.1);
+  border-bottom: 1px solid rgba(20, 32, 43, 0.05);
 }
 
-.sectionHeader {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.sectionNumber {
-  font-size: 0.9rem;
-  color: #C4973D;
-  border: 1px solid #C4973D;
-  padding: 5px 12px;
-  border-radius: 50%;
+.sectionHeader h2 {
+  font-size: 2rem;
   font-weight: 600;
+  color: var(--navy);
 }
 
 .aiInsightCard {
-  background: #f8f9fa;
-  border-left: 5px solid #C4973D;
-  padding: 2rem;
+  background: rgba(20, 32, 43, 0.03);
+  border-left: 5px solid var(--navy);
+  padding: 2.5rem;
+  border-radius: 16px;
   margin: 2rem 0;
 }
 
-.conflictAlert {
-  background: rgba(196, 151, 61, 0.1);
-  border: 1px solid #C4973D;
-  padding: 1.5rem;
-  border-radius: 15px;
-  margin-top: 1rem;
-}
-
 .scoreBadge {
-  background: #14202B;
-  color: #C4973D;
-  width: 80px;
-  height: 80px;
+  background: var(--navy);
+  color: #fff;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-.freeNotes {
-  font-style: italic;
-  color: #666;
-  border-top: 1px dashed #ddd;
-  margin-top: 2rem;
-  padding-top: 1rem;
+.conflictAlert {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  padding: 1.5rem;
+  border-radius: 12px;
 }
