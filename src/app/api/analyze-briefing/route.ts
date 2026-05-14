@@ -8,9 +8,9 @@ Analise este briefing e retorne um JSON COMPACTO e objetivo.
 BRIEFING: ${JSON.stringify(briefingData)}
 
 RETORNE APENAS este JSON (sem markdown, sem explicações):
-{"archetype":{"name":"NOME","reason":"motivo curto"},"conflicts":[{"type":"Orçamento","issue":"descrição","level":"alto"}],"concept":["diretriz 1","diretriz 2","diretriz 3"],"keywords":["palavra1","palavra2","palavra3"],"complexity":{"score":7,"reason":"motivo curto"},"emotionalState":{"state":"estado","recommendation":"recomendação curta"},"openQuestions":["pergunta 1?","pergunta 2?"],"narrative":"Narrativa profissional em 2 frases."}
+{"archetype":{"name":"NOME","reason":"motivo curto"},"concept":["diretriz 1","diretriz 2","diretriz 3"],"keywords":["palavra1","palavra2","palavra3"],"complexity":{"score":7,"reason":"motivo curto"},"emotionalState":{"state":"estado","recommendation":"recomendação curta"},"narrative":"Narrativa profissional em 2 frases."}
 
-REGRAS: Arquétipos disponíveis: Cuidador, Anfitrião, Pragmático, Explorador, Líder, Sonhador. Seja crítico e objetivo. Respostas CURTAS.`;
+REGRAS: Arquétipos disponíveis: Cuidador, Anfitrião, Pragmático, Explorador, Líder, Sonhador. Seja objetivo e positivo. Respostas CURTAS. NÃO inclua campo "conflicts".`;
 
 export async function POST(req: NextRequest) {
   try {

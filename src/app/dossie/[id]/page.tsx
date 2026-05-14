@@ -530,16 +530,6 @@ export default function DossiePage() {
                   <p style={{ fontSize: '0.8rem' }}>{aiAnalysis.emotionalState?.recommendation}</p>
                 </div>
               </div>
-              {aiAnalysis.conflicts?.length > 0 && (
-                <div className={styles.conflictAlert}>
-                  <h4>Conflitos Detectados</h4>
-                  {aiAnalysis.conflicts.map((c: any, i: number) => (
-                    <p key={i} style={{ borderBottom: '1px solid rgba(0,0,0,0.08)', padding: '0.5rem 0' }}>
-                      <strong>[{c.level?.toUpperCase()}] {c.type}:</strong> {c.issue}
-                    </p>
-                  ))}
-                </div>
-              )}
               {aiAnalysis.concept?.length > 0 && (
                 <div style={{ marginTop: '2rem' }}>
                   <h4>Diretrizes de Conceito</h4>
