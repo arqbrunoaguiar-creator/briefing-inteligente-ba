@@ -11,6 +11,8 @@ export default function NovoCliente() {
   const [detectedRooms, setDetectedRooms] = useState<string[]>([]);
   const [planAnalysis, setPlanAnalysis] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const photoRef = useRef<HTMLInputElement>(null);
+  const [photoPreview, setPhotoPreview] = useState('');
   const [formData, setFormData] = useState({
     clientName: '',
     whatsapp: '',
@@ -20,6 +22,28 @@ export default function NovoCliente() {
     situation: 'Pronto para reformar',
     observations: ''
   });
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX = 300;
+        const scale = Math.min(MAX / img.width, MAX / img.height, 1);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const base64 = canvas.toDataURL('image/jpeg', 0.8);
+        setPhotoPreview(base64);
+        setFormData(prev => ({ ...prev, photo: base64 }));
+      };
+      img.src = ev.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -120,9 +144,26 @@ export default function NovoCliente() {
         </div>
 
         <div style={{ marginTop: '2rem' }}>
-          <label style={{ fontWeight: 600, marginBottom: '0.5rem', display: 'block' }}>URL da Foto (opcional)</label>
-          <input type="text" className={styles.searchInput} style={{ width: '100%', maxWidth: '100%', background: '#f8f9fa' }} placeholder="https://..."
-            value={formData.photo} onChange={e => setFormData({...formData, photo: e.target.value})} />
+          <label style={{ fontWeight: 600, marginBottom: '0.5rem', display: 'block' }}>Foto do Cliente / Casal (opcional)</label>
+          <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoUpload} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            {photoPreview ? (
+              <img src={photoPreview} alt="Preview" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #C4973D' }} />
+            ) : (
+              <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', color: '#aaa', border: '2px dashed #ccc' }}>👤</div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <button type="button" onClick={() => photoRef.current?.click()} className={styles.btnAction_secondary} style={{ padding: '0.6rem 1.5rem', borderRadius: '10px', fontSize: '0.9rem' }}>
+                {photoPreview ? '🔄 Trocar Foto' : '📷 Fazer Upload'}
+              </button>
+              {photoPreview && (
+                <button type="button" onClick={() => { setPhotoPreview(''); setFormData(prev => ({ ...prev, photo: '' })); }} style={{ background: 'none', border: 'none', color: '#c0392b', fontSize: '0.8rem', cursor: 'pointer', textAlign: 'left' }}>
+                  ✕ Remover
+                </button>
+              )}
+              <span style={{ fontSize: '0.75rem', color: '#888' }}>JPG, PNG ou WebP · max 5MB</span>
+            </div>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
