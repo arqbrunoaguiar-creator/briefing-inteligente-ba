@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
             'anthropic-version': '2023-06-01'
           },
           body: JSON.stringify({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-sonnet-4-5",
             max_tokens: 1024,
             messages: [{ role: "user", content: [
               { type: "image", source: { type: "base64", media_type: mimeType, data: base64 } },
