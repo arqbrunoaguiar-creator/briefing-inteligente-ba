@@ -124,6 +124,78 @@ const MOODBOARDS: Record<string, any> = {
   },
 };
 
+// ── Detalhes ricos de temperamento ───────────────────────────────────────────
+const TEMP_DETAIL: Record<string, { home: string; lifestyle: string; project: string; avoid: string; strengths: string[]; color: string }> = {
+  san: {
+    home: 'Ambientes fluidos e integrados, sem barreiras, que convidem à conversa e ao movimento. Sala conectada à cozinha, mesas generosas, espaços que celebram a presença de pessoas.',
+    lifestyle: 'Você se energiza pela interação. Precisa sentir que a vida acontece em casa — luz natural abundante, cores que animam, espaços que convidam a receber com naturalidade.',
+    project: 'Priorizaremos integração de ambientes, iluminação vibrante e festiva, pontos de encontro bem definidos. Mesa de jantar, ilha de cozinha e área de convívio serão os protagonistas.',
+    avoid: 'Ambientes muito fechados, corredores sem saída, iluminação fria e monocromática, esquemas de cor sem personalidade.',
+    strengths: ['Ambientes integrados', 'Iluminação quente e vibrante', 'Espaços sociais amplos', 'Cores com vida e intenção'],
+    color: '#e8500a',
+  },
+  col: {
+    home: 'Organização impecável, cada item com seu lugar, funcionalidade como lei. Seu lar deve transmitir controle — tudo à mão, sem desperdício de espaço ou de energia.',
+    lifestyle: 'Em casa, você precisa de eficiência. Nada que faça você perder tempo procurando, nada fora do lugar. A ordem aumenta sua produtividade e satisfação diária.',
+    project: 'Soluções de armazenamento inteligentes, marcenaria sob medida, layout otimizado para circulação rápida. Contrastes visuais fortes e presença arquitetônica marcante.',
+    avoid: 'Desordem e acumulação, móveis sem função clara, layouts confusos, excesso de peças decorativas sem propósito real.',
+    strengths: ['Marcenaria inteligente', 'Contraste e impacto visual', 'Layout de alto desempenho', 'Materiais robustos e duráveis'],
+    color: '#c0392b',
+  },
+  mel: {
+    home: 'Cada detalhe é intencional. Seu lar é um santuário de ordem, harmonia e beleza cuidadosa. Cada cor foi pensada, cada objeto tem um lugar — e essa perfeição silenciosa é o que te restaura.',
+    lifestyle: 'A ordem é o seu combustível criativo. Com iluminação perfeita e paleta harmoniosa, você pensa com mais clareza, cria mais e descansa de verdade. O caos visual é seu maior inimigo.',
+    project: 'Atenção meticulosa aos acabamentos, paleta cromática construída com rigor, iluminação em múltiplas camadas, simetria e equilíbrio como princípios absolutos de layout.',
+    avoid: 'Misturas estilísticas sem coerência, acabamentos descuidados, iluminação crua e direta, combinações de cores aleatórias ou sem harmonia.',
+    strengths: ['Paleta cromática sofisticada', 'Iluminação em camadas', 'Acabamentos impecáveis', 'Simetria e ordem visual'],
+    color: '#2c3e7a',
+  },
+  fle: {
+    home: 'Seu lar deve abraçar quem entra. Conforto máximo em cada superfície, texturas que convidam ao toque, uma atmosfera que desacelera o mundo lá fora e recarrega sua energia de verdade.',
+    lifestyle: 'Em casa, você recarrega. Precisa de um espaço que elimine qualquer atrito — sofá onde você desaparece, quarto que é um convite permanente ao descanso, cozinha que te deixa à vontade.',
+    project: 'Tecidos de qualidade premium, estofados generosos, tapetes de fibra natural, iluminação quente e aconchegante em todos os cômodos. O conforto sensorial acima de qualquer estética fria.',
+    avoid: 'Materiais que parecem bons mas são desconfortáveis, iluminação branca e clínica, layouts que dificultam o relaxamento e o recolhimento.',
+    strengths: ['Estofados e tecidos premium', 'Iluminação aconchegante', 'Ambiente de descanso real', 'Elementos sensoriais e táteis'],
+    color: '#2d7a4a',
+  },
+};
+
+// ── Detalhes ricos de arquétipo ───────────────────────────────────────────────
+const ARCH_DETAIL: Record<string, { home: string; aesthetic: string; project: string; concept: string; keywords: string[]; color: string }> = {
+  sab: {
+    home: 'Seu lar é uma extensão da sua mente — um lugar de reflexão, curadoria e descoberta contínua. Biblioteca, canto de leitura, objetos com significado e obras que provocam pensamento.',
+    aesthetic: 'Wabi-sabi, nórdico intelectual, artisan. Tons neutros e quentes, madeira natural, livros como decoração, objetos de viagem e coleções com história e propósito.',
+    project: 'Estante como peça central do projeto, iluminação de leitura de qualidade, materiais naturais que evocam sabedoria — madeira, pedra, linho. Cada peça escolhida com intenção profunda.',
+    concept: 'Um lar que educa os sentidos e alimenta a mente. Onde cada objeto tem uma razão de existir e uma história para contar.',
+    keywords: ['Sabedoria', 'Contemplação', 'Curadoria', 'Profundidade', 'Naturalidade'],
+    color: '#5b4a2e',
+  },
+  cri: {
+    home: 'Sua casa é uma obra de arte em construção permanente. Espaço para experimentação, paredes que expõem sua coleção, ambientes que estimulam novas ideias a cada olhar.',
+    aesthetic: 'Eclético curado, art deco, pós-moderno. Peças únicas, arte contemporânea, móveis com personalidade, mix intencional de épocas, culturas e referências.',
+    project: 'Liberdade criativa como princípio. Mix de estilos curado, peças assinadas, parede de arte protagonista, iluminação que valoriza cada objeto. Absolutamente nada genérico.',
+    concept: 'Um espaço que é a extensão da sua identidade — sempre em evolução, sempre surpreendente, sempre irrepetível.',
+    keywords: ['Originalidade', 'Expressão', 'Arte', 'Surpresa', 'Autenticidade'],
+    color: '#7a2d7a',
+  },
+  gov: {
+    home: 'Seu lar comunica excelência e visão. Materiais de primeira linha, simetria que transmite ordem, peças que declaram posição. Um espaço que impressiona antes mesmo de qualquer palavra.',
+    aesthetic: 'Neoclássico contemporâneo, luxo discreto, executivo refinado. Tons escuros com dourado, contraste elegante, materiais imponentes que resistem ao tempo.',
+    project: 'Mármore, couro, metais nobres. Simetria como lei de composição. Iluminação que dramatiza e destaca. Home office como extensão do escritório executivo. Cada detalhe comunica poder com elegância.',
+    concept: 'Um lar que é também um manifesto da sua trajetória — imponente, refinado e à altura de quem você se tornou.',
+    keywords: ['Autoridade', 'Excelência', 'Simetria', 'Nobreza', 'Conquista'],
+    color: '#1a2e4a',
+  },
+  ama: {
+    home: 'Seu lar é uma ode à beleza e ao afeto. Cada ambiente guarda uma memória ou cria o cenário perfeito para novas. Texturas irresistíveis, luz que cria atmosfera, detalhes que tocam o coração.',
+    aesthetic: 'Romântico contemporâneo, boho luxuoso. Curvas suaves, tecidos ricos, tons quentes e profundos, flores e objetos com carga afetiva que contam a história de uma vida.',
+    project: 'Veludo, iluminação indireta dourada, espelhos que ampliam e encantam, plantas vivas, aromas como parte do projeto. Beleza que também é sensação e cuidado.',
+    concept: 'Um lar que é poesia — onde cada detalhe foi escolhido com amor e onde a beleza é uma forma de cuidar de quem você ama.',
+    keywords: ['Afeto', 'Beleza', 'Sensação', 'Memória', 'Poesia'],
+    color: '#8b1a3a',
+  },
+};
+
 // ── Textos de temperamento para o cliente ─────────────────────────────────────
 const TEMP_CLIENT_TEXT: Record<string, string> = {
   san: 'Sua casa será um palco de encontros e alegria. Você se energiza com cor, luz e movimento — seu projeto precisa de ambientes convidativos, bem iluminados e com espaços de convívio generosos. A socialização é o coração do seu lar.',
@@ -188,11 +260,73 @@ export default function DossiePage() {
     try {
       const res = await fetch('/api/analyze-briefing', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ briefingData }) });
       const analysis = await res.json();
-      setAiAnalysis(analysis);
-      await supabase.from('briefings').update({ ai_analysis: analysis }).eq('id', params.id);
-      await fetch('/api/notion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ briefingData, aiAnalysis: analysis }) });
-    } catch (e) { console.error('AI Analysis failed', e); }
+      if (!analysis.error) {
+        setAiAnalysis(analysis);
+        await supabase.from('briefings').update({ ai_analysis: analysis }).eq('id', params.id);
+        await fetch('/api/notion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ briefingData, aiAnalysis: analysis }) });
+      } else {
+        // Fallback local — gera análise sem IA a partir dos dados do briefing
+        const localAnalysis = buildLocalAnalysis(briefingData);
+        setAiAnalysis(localAnalysis);
+        await supabase.from('briefings').update({ ai_analysis: localAnalysis }).eq('id', params.id);
+      }
+    } catch (e) {
+      console.error('AI Analysis failed', e);
+      const localAnalysis = buildLocalAnalysis(briefingData);
+      setAiAnalysis(localAnalysis);
+    }
     setAnalyzing(false);
+  }
+
+  function buildLocalAnalysis(briefingData: any) {
+    const a = briefingData.answers || {};
+    const pr = a.preRegistration || {};
+    const ps = a.psychology || {};
+    // Resolver temperamento e arquétipo
+    const tMap: Record<string, string[]> = {
+      san: ['Energizado e feliz','Me traz alegria moderada','Receber amigos e conversar'],
+      mel: ['Sinto que é bagunçado','Muita bagunça visual','Ficar sozinho em silêncio','Organizar a casa para relaxar'],
+      fle: ['Pode me cansar rápido','Pouco espaço para circulação','Dormir ou ver um filme'],
+      col: ['Silêncio absoluto'],
+    };
+    const aMap: Record<string, string[]> = {
+      sab: ['Um guia de sabedoria','Ter paz e clareza mental'],
+      cri: ['Uma obra de arte abstrata','Inovar e ser original'],
+      gov: ['Uma biografia de sucesso','Transmitir autoridade e status'],
+      ama: ['Um romance poético','Criar memórias afetivas'],
+    };
+    const tVotes: Record<string,number> = {san:0,col:0,mel:0,fle:0};
+    const aVotes: Record<string,number> = {sab:0,cri:0,gov:0,ama:0};
+    const allT = {...(ps.temperament||{}), ...Object.fromEntries(Object.entries(a.dynamics||{}).filter(([k])=>/^t\d/.test(k)))};
+    const allA = {...(ps.archetype||{}), ...Object.fromEntries(Object.entries(a.dynamics||{}).filter(([k])=>/^a\d/.test(k)))};
+    Object.values(allT).forEach((v:any)=>{for(const[k,vs] of Object.entries(tMap)){if(vs.includes(v)){tVotes[k]++;break;}}});
+    Object.values(allA).forEach((v:any)=>{for(const[k,vs] of Object.entries(aMap)){if(vs.includes(v)){aVotes[k]++;break;}}});
+    const tId = Object.entries(tVotes).sort(([,a],[,b])=>b-a)[0]?.[0]||'fle';
+    const aId = Object.entries(aVotes).sort(([,a],[,b])=>b-a)[0]?.[0]||'sab';
+    const tLabel = temperaments.find(t=>t.id===tId)?.label||'Equilibrado';
+    const aLabel = archetypes.find(a=>a.id===aId)?.label||'Contemporâneo';
+    const rooms: string[] = briefingData.rooms || [];
+    const inv = investmentLevels.find(i=>i.id===a.investment);
+    const styleCts: Record<string,number> = {};
+    Object.values(a.styles||{}).forEach((id:any)=>{ const f=STYLE_FAMILY[id]; if(f) styleCts[f]=(styleCts[f]||0)+1; });
+    const dominant = Object.entries(styleCts).sort(([,a],[,b])=>b-a)[0]?.[0]||'Contemporâneo';
+    const conceptMap: Record<string,string[]> = {
+      sab: ['Criar espaços que incentivem reflexão e contemplação','Priorizar materiais naturais com história','Curadoria meticulosa de cada elemento visual'],
+      cri: ['Desenvolver um projeto único e insubstituível','Integrar arte e design de forma indivisível','Criar surpresa visual em cada ângulo'],
+      gov: ['Projetar ambientes que comunicam autoridade e refinamento','Usar materiais nobres e imponentes','Garantir simetria e equilíbrio arquitetônico'],
+      ama: ['Criar atmosferas sensorialmente ricas','Priorizar conforto e beleza acima de tudo','Integrar elementos afetivos e poéticos'],
+    };
+    return {
+      archetype: { name: aLabel, reason: `Identificado a partir das respostas sobre propósito e identidade do lar.` },
+      narrative: `Perfil ${tLabel} com alma ${aLabel}. Projeto de linguagem ${dominant.toLowerCase()} com ${rooms.length} ambiente${rooms.length!==1?'s':''} e investimento ${inv?.label||'a definir'}.`,
+      complexity: { score: Math.min(10, 4+rooms.length+(inv?.id==='alto'?2:inv?.id==='medio'?1:0)), reason: `${rooms.length} ambiente${rooms.length!==1?'s':''} com nível ${inv?.label||'de investimento indefinido'}` },
+      conflicts: [],
+      concept: conceptMap[aId]||['Criar um projeto único e personalizado','Equilibrar estética e funcionalidade','Refletir a identidade do cliente'],
+      keywords: [dominant, tLabel, aLabel].filter(Boolean),
+      emotionalState: { state: 'Engajado', recommendation: 'Perfil com identidade estética bem definida e objetivos claros.' },
+      openQuestions: [],
+      provider: 'local',
+    };
   }
 
   const handlePdf = async () => {
@@ -213,8 +347,16 @@ export default function DossiePage() {
   const answers = data.answers || {};
   const preReg = answers.preRegistration || {};
   const psych = answers.psychology || {};
-  const tempAnswers = psych.temperament || {};
-  const archAnswers = psych.archetype || {};
+  // Compatibilidade: respostas podem estar em psych.temperament (t_0,t_1…) ou
+  // diretamente em answers.dynamics (t1,t2…) dependendo da versão do briefing
+  const tempAnswers: Record<string, string> = {
+    ...(psych.temperament || {}),
+    ...Object.fromEntries(Object.entries(answers.dynamics || {}).filter(([k]) => /^t\d/.test(k))),
+  };
+  const archAnswers: Record<string, string> = {
+    ...(psych.archetype || {}),
+    ...Object.fromEntries(Object.entries(answers.dynamics || {}).filter(([k]) => /^a\d/.test(k))),
+  };
   const styleAnswers: Record<string, string> = answers.styles || {};
   const selectedRooms: string[] = data.rooms || [];
   const roomHabits = answers.rooms?.habits || {};
@@ -235,9 +377,12 @@ export default function DossiePage() {
     fle: ['Pode me cansar rápido', 'Pouco espaço para circulação', 'Dormir ou ver um filme'],
     col: ['Silêncio absoluto'],
   };
-  Object.values(tempAnswers).forEach((ans: any) => { for (const [key, vals] of Object.entries(tempMap)) { if (vals.includes(ans)) { tempVotes[key]++; break; } } });
+  Object.values(tempAnswers).forEach((ans: any) => {
+    for (const [key, vals] of Object.entries(tempMap)) { if (vals.includes(ans)) { tempVotes[key]++; break; } }
+  });
   const topTempId = Object.entries(tempVotes).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
   const topTemp = temperaments.find(t => t.id === topTempId);
+  const tempDetail = TEMP_DETAIL[topTempId];
 
   // Arquétipo predominante
   const archVotes: Record<string, number> = { sab: 0, cri: 0, gov: 0, ama: 0 };
@@ -247,9 +392,12 @@ export default function DossiePage() {
     gov: ['Uma biografia de sucesso', 'Transmitir autoridade e status'],
     ama: ['Um romance poético', 'Criar memórias afetivas'],
   };
-  Object.values(archAnswers).forEach((ans: any) => { for (const [key, vals] of Object.entries(archMap)) { if (vals.includes(ans)) { archVotes[key]++; break; } } });
+  Object.values(archAnswers).forEach((ans: any) => {
+    for (const [key, vals] of Object.entries(archMap)) { if (vals.includes(ans)) { archVotes[key]++; break; } }
+  });
   const topArchId = Object.entries(archVotes).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
   const topArch = archetypes.find(a => a.id === topArchId);
+  const archDetail = ARCH_DETAIL[topArchId];
 
   const selectedWords: string[] = answers.words || [];
   const wordsByGroup = wordGroups.map(g => ({ ...g, selected: g.words.filter(w => selectedWords.includes(w)) })).filter(g => g.selected.length > 0);
@@ -345,9 +493,22 @@ export default function DossiePage() {
           {analyzing ? (
             <p style={{ color: '#888', fontStyle: 'italic' }}>IA analisando dados do projeto... aguarde alguns segundos.</p>
           ) : aiAnalysis?.error ? (
-            <p style={{ color: '#c0392b' }}>⚠️ {aiAnalysis.error}</p>
+            <div>
+              <p style={{ color: '#c0392b', marginBottom: '0.5rem' }}>⚠️ {aiAnalysis.error}</p>
+              <button onClick={() => data && generateAIAnalysis(data)} style={{ background: '#C4973D', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.5rem 1.2rem', cursor: 'pointer', fontSize: '0.85rem' }}>🔄 Tentar novamente</button>
+            </div>
           ) : aiAnalysis?.archetype ? (
             <div className={styles.aiContent}>
+              {aiAnalysis.provider && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <span style={{ fontSize: '0.68rem', background: aiAnalysis.provider === 'local' ? '#f0e8d5' : '#e8f4f0', color: aiAnalysis.provider === 'local' ? '#8b6914' : '#2d6a4f', padding: '0.2rem 0.7rem', borderRadius: '10px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>
+                    {aiAnalysis.provider === 'local' ? '📊 Análise local' : aiAnalysis.provider === 'claude' ? '✦ Claude AI' : aiAnalysis.provider === 'openai' ? '✦ OpenAI' : '✦ Gemini'}
+                  </span>
+                  {aiAnalysis.provider === 'local' && (
+                    <button onClick={() => data && generateAIAnalysis(data)} style={{ background: 'none', border: '1px solid #C4973D', color: '#C4973D', borderRadius: '8px', padding: '0.2rem 0.8rem', cursor: 'pointer', fontSize: '0.75rem' }}>🔄 Tentar com IA</button>
+                  )}
+                </div>
+              )}
               <div className={styles.aiInsightCard}>
                 <h3>Arquétipo: {aiAnalysis.archetype.name}</h3>
                 <p>{aiAnalysis.archetype.reason}</p>
@@ -435,86 +596,176 @@ export default function DossiePage() {
           </section>
         )}
 
-        {/* ══ 04 — TEMPERAMENTO & ARQUÉTIPO ══ */}
+        {/* ══ 04 — DNA DO PROJETO ══ */}
         <section className={styles.section}>
-          <div className={styles.sectionHeader}><span className={styles.sectionNumber}>04</span><h2>Temperamento & Arquétipo</h2></div>
+          <div className={styles.sectionHeader}><span className={styles.sectionNumber}>04</span><h2>DNA do Projeto</h2></div>
 
-          {/* Explicação geral */}
-          <div style={{ background: '#f8f9fa', borderRadius: '14px', padding: '1.4rem', marginBottom: '2rem', borderLeft: '4px solid #14202B' }}>
-            <p style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.8rem' }}>O que isso significa?</p>
-            <p style={{ color: '#444', lineHeight: 1.8, fontSize: '0.9rem' }}>
-              O <strong>Temperamento</strong> revela como você reage ao espaço ao seu redor — o que te dá energia, o que te incomoda e como você se restaura. O <strong>Arquétipo de Alma</strong> vai além: mostra o <em>propósito</em> que você projeta no seu lar — o que você quer que ele comunique ao mundo e, principalmente, a você mesmo.
-            </p>
-            <p style={{ color: '#444', lineHeight: 1.8, fontSize: '0.9rem', marginTop: '0.8rem' }}>
-              Juntos, esses perfis orientam cada decisão criativa: da paleta de cores à escolha dos materiais, da iluminação ao layout. Não são rótulos — são ferramentas para criar um espaço que seja genuinamente <em>seu</em>.
+          {/* Intro metodologia */}
+          <div style={{ background: 'linear-gradient(135deg, #14202B 0%, #1e3348 100%)', borderRadius: '16px', padding: '1.8rem 2rem', marginBottom: '2.5rem', color: '#fff' }}>
+            <p style={{ fontSize: '0.7rem', color: '#C4973D', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Nossa metodologia exclusiva</p>
+            <p style={{ lineHeight: 1.85, fontSize: '0.92rem', opacity: 0.9, maxWidth: '780px' }}>
+              Cada projeto da Bruno Aguiar Interiores começa por dentro. Antes de escolher uma cor ou um material, entendemos <strong style={{ color: '#C4973D' }}>quem você é</strong> — como você reage ao espaço, o que te restaura, o que te inspira. Dois perfis orientam todas as decisões criativas: o <strong style={{ color: '#C4973D' }}>Temperamento</strong> (sua relação com o espaço) e o <strong style={{ color: '#C4973D' }}>Arquétipo de Alma</strong> (o propósito que você projeta no seu lar). Não são rótulos — são a bússola do seu projeto.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-            {/* Temperamento */}
-            <div>
-              <h4 style={{ color: '#C4973D', marginBottom: '1rem', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Temperamento</h4>
-              {Object.keys(tempAnswers).length > 0 ? (
-                <>
-                  {temperamentQuestions.map((q, i) => {
-                    const ans = tempAnswers[`t_${i}`] || tempAnswers[i];
-                    return ans ? (
-                      <div key={i} style={{ marginBottom: '0.8rem', background: '#f8f9fa', borderRadius: '10px', padding: '0.8rem 1rem' }}>
-                        <p style={{ fontSize: '0.72rem', color: '#999', marginBottom: '0.3rem' }}>{q.question}</p>
-                        <p style={{ fontWeight: 600, color: '#14202B', fontSize: '0.88rem' }}>→ {ans}</p>
-                      </div>
-                    ) : null;
-                  })}
-                  {topTemp && (
-                    <>
-                      <div style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #14202B, #1e3348)', color: '#fff', borderRadius: '12px', padding: '1.2rem' }}>
-                        <p style={{ fontSize: '1.4rem', marginBottom: '0.3rem' }}>{topTemp.icon}</p>
-                        <p style={{ fontWeight: 700, color: '#C4973D', fontSize: '1rem' }}>{topTemp.label}</p>
-                        <p style={{ fontSize: '0.8rem', opacity: 0.85, marginTop: '0.4rem', lineHeight: 1.6 }}>{topTemp.description}</p>
-                        <p style={{ fontSize: '0.78rem', color: '#C4973D', marginTop: '0.6rem', fontStyle: 'italic', lineHeight: 1.6 }}>💡 {topTemp.tips}</p>
-                      </div>
-                      <div style={{ marginTop: '1rem', background: '#fffbf0', border: '1px solid #f0dba0', borderRadius: '12px', padding: '1rem' }}>
-                        <p style={{ fontSize: '0.7rem', color: '#b8860b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>O que isso significa para o seu projeto</p>
-                        <p style={{ color: '#444', fontSize: '0.85rem', lineHeight: 1.7 }}>{TEMP_CLIENT_TEXT[topTemp.id] || ''}</p>
-                      </div>
-                    </>
-                  )}
-                </>
-              ) : <p style={{ color: '#aaa', fontSize: '0.85rem' }}>Não respondido.</p>}
+          {/* ── TEMPERAMENTO ── */}
+          <div style={{ marginBottom: '3rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ width: '4px', height: '32px', background: topTemp ? TEMP_DETAIL[topTemp.id]?.color || '#C4973D' : '#C4973D', borderRadius: '4px' }} />
+              <div>
+                <p style={{ fontSize: '0.65rem', color: '#aaa', textTransform: 'uppercase', letterSpacing: '3px' }}>Perfil Psicológico</p>
+                <h3 style={{ color: '#14202B', fontSize: '1.2rem', margin: 0 }}>Temperamento</h3>
+              </div>
             </div>
 
-            {/* Arquétipo */}
-            <div>
-              <h4 style={{ color: '#C4973D', marginBottom: '1rem', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Arquétipo de Alma</h4>
-              {Object.keys(archAnswers).length > 0 ? (
-                <>
-                  {archetypeQuestions.map((q, i) => {
-                    const ans = archAnswers[`a_${i}`] || archAnswers[i];
-                    return ans ? (
-                      <div key={i} style={{ marginBottom: '0.8rem', background: '#f8f9fa', borderRadius: '10px', padding: '0.8rem 1rem' }}>
-                        <p style={{ fontSize: '0.72rem', color: '#999', marginBottom: '0.3rem' }}>{q.question}</p>
-                        <p style={{ fontWeight: 600, color: '#14202B', fontSize: '0.88rem' }}>→ {ans}</p>
-                      </div>
-                    ) : null;
-                  })}
-                  {topArch && (
-                    <>
-                      <div style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #c9a96e, #8b6914)', color: '#fff', borderRadius: '12px', padding: '1.2rem' }}>
-                        <p style={{ fontSize: '1.4rem', marginBottom: '0.3rem' }}>{topArch.icon}</p>
-                        <p style={{ fontWeight: 700, fontSize: '1rem' }}>{topArch.label}</p>
-                        <p style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '0.4rem', lineHeight: 1.6 }}>{topArch.description}</p>
-                        <p style={{ fontSize: '0.78rem', opacity: 0.85, marginTop: '0.6rem', fontStyle: 'italic', lineHeight: 1.6 }}>🎨 {topArch.materials}</p>
-                      </div>
-                      <div style={{ marginTop: '1rem', background: '#fdf6ee', border: '1px solid #e8d5a0', borderRadius: '12px', padding: '1rem' }}>
-                        <p style={{ fontSize: '0.7rem', color: '#8b6914', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>O que isso significa para o seu projeto</p>
-                        <p style={{ color: '#444', fontSize: '0.85rem', lineHeight: 1.7 }}>{ARCH_CLIENT_TEXT[topArch.id] || ''}</p>
-                      </div>
-                    </>
-                  )}
-                </>
-              ) : <p style={{ color: '#aaa', fontSize: '0.85rem' }}>Não respondido.</p>}
-            </div>
+            {/* Respostas do cliente */}
+            {Object.keys(tempAnswers).length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                {temperamentQuestions.map((q) => {
+                  const ans = tempAnswers[q.id] || tempAnswers[`t_${temperamentQuestions.indexOf(q)}`];
+                  return ans ? (
+                    <div key={q.id} style={{ background: '#f8f9fa', borderRadius: '10px', padding: '0.7rem 1rem', fontSize: '0.82rem', color: '#444', borderLeft: `3px solid ${topTemp ? TEMP_DETAIL[topTemp.id]?.color || '#C4973D' : '#C4973D'}` }}>
+                      <span style={{ color: '#aaa', fontSize: '0.68rem', display: 'block', marginBottom: '0.2rem' }}>{q.question}</span>
+                      <strong style={{ color: '#14202B' }}>{ans}</strong>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            )}
+
+            {topTemp && tempDetail ? (
+              <>
+                {/* Card principal do temperamento */}
+                <div style={{ background: `linear-gradient(135deg, ${tempDetail.color}ee, ${tempDetail.color}99)`, color: '#fff', borderRadius: '16px', padding: '1.8rem', marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                  <div style={{ fontSize: '3rem', lineHeight: 1 }}>{topTemp.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: 800, fontSize: '1.4rem', marginBottom: '0.3rem', letterSpacing: '-0.5px' }}>{topTemp.label}</p>
+                    <p style={{ opacity: 0.9, lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '0.8rem' }}>{topTemp.description}</p>
+                    <p style={{ opacity: 0.85, fontSize: '0.85rem', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '0.8rem', lineHeight: 1.6 }}>
+                      💡 <strong>Dica de projeto:</strong> {topTemp.tips}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4 blocos de influência */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                  {[
+                    { icon: '🏠', label: 'No Lar', text: tempDetail.home },
+                    { icon: '☀️', label: 'No Dia a Dia', text: tempDetail.lifestyle },
+                    { icon: '✏️', label: 'No Projeto de Interiores', text: tempDetail.project },
+                    { icon: '⚠️', label: 'O Que Evitar', text: tempDetail.avoid },
+                  ].map(({ icon, label, text }) => (
+                    <div key={label} style={{ background: '#f8f9fa', borderRadius: '14px', padding: '1.2rem' }}>
+                      <p style={{ fontSize: '0.72rem', color: '#888', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.6rem' }}>{icon} {label}</p>
+                      <p style={{ color: '#333', fontSize: '0.87rem', lineHeight: 1.75 }}>{text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Chips de forças */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+                  {tempDetail.strengths.map(s => (
+                    <span key={s} style={{ background: `${tempDetail.color}15`, color: tempDetail.color, border: `1px solid ${tempDetail.color}40`, padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700 }}>{s}</span>
+                  ))}
+                </div>
+
+                {/* Mensagem ao cliente */}
+                <div style={{ background: '#fffbf0', border: `1px solid ${tempDetail.color}30`, borderRadius: '14px', padding: '1.3rem' }}>
+                  <p style={{ fontSize: '0.68rem', color: '#b8860b', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.7rem' }}>✦ Como isso se reflete no seu projeto</p>
+                  <p style={{ color: '#333', fontSize: '0.9rem', lineHeight: 1.8, fontStyle: 'italic' }}>{TEMP_CLIENT_TEXT[topTempId]}</p>
+                </div>
+              </>
+            ) : (
+              <p style={{ color: '#aaa', fontSize: '0.85rem' }}>Temperamento não identificado nas respostas.</p>
+            )}
           </div>
+
+          {/* Divisor */}
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, #C4973D40, transparent)', margin: '0 0 3rem' }} />
+
+          {/* ── ARQUÉTIPO ── */}
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ width: '4px', height: '32px', background: topArch ? ARCH_DETAIL[topArch.id]?.color || '#C4973D' : '#C4973D', borderRadius: '4px' }} />
+              <div>
+                <p style={{ fontSize: '0.65rem', color: '#aaa', textTransform: 'uppercase', letterSpacing: '3px' }}>Identidade do Espaço</p>
+                <h3 style={{ color: '#14202B', fontSize: '1.2rem', margin: 0 }}>Arquétipo de Alma</h3>
+              </div>
+            </div>
+
+            {/* Respostas do cliente */}
+            {Object.keys(archAnswers).length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                {archetypeQuestions.map((q) => {
+                  const ans = archAnswers[q.id] || archAnswers[`a_${archetypeQuestions.indexOf(q)}`];
+                  return ans ? (
+                    <div key={q.id} style={{ background: '#f8f9fa', borderRadius: '10px', padding: '0.7rem 1rem', fontSize: '0.82rem', color: '#444', borderLeft: `3px solid ${topArch ? ARCH_DETAIL[topArch.id]?.color || '#C4973D' : '#C4973D'}` }}>
+                      <span style={{ color: '#aaa', fontSize: '0.68rem', display: 'block', marginBottom: '0.2rem' }}>{q.question}</span>
+                      <strong style={{ color: '#14202B' }}>{ans}</strong>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            )}
+
+            {topArch && archDetail ? (
+              <>
+                {/* Card principal do arquétipo */}
+                <div style={{ background: `linear-gradient(135deg, ${archDetail.color}ee, ${archDetail.color}88)`, color: '#fff', borderRadius: '16px', padding: '1.8rem', marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                  <div style={{ fontSize: '3rem', lineHeight: 1 }}>{topArch.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: 800, fontSize: '1.4rem', marginBottom: '0.3rem', letterSpacing: '-0.5px' }}>{topArch.label}</p>
+                    <p style={{ opacity: 0.9, lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '0.8rem' }}>{topArch.description}</p>
+                    <p style={{ opacity: 0.85, fontSize: '0.85rem', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '0.8rem', lineHeight: 1.6 }}>
+                      🎨 <strong>Linguagem material:</strong> {topArch.materials}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4 blocos de influência */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                  {[
+                    { icon: '🏠', label: 'No Lar', text: archDetail.home },
+                    { icon: '🎨', label: 'Linguagem Estética', text: archDetail.aesthetic },
+                    { icon: '✏️', label: 'No Projeto de Interiores', text: archDetail.project },
+                    { icon: '💡', label: 'Conceito Central', text: archDetail.concept },
+                  ].map(({ icon, label, text }) => (
+                    <div key={label} style={{ background: '#f8f9fa', borderRadius: '14px', padding: '1.2rem' }}>
+                      <p style={{ fontSize: '0.72rem', color: '#888', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.6rem' }}>{icon} {label}</p>
+                      <p style={{ color: '#333', fontSize: '0.87rem', lineHeight: 1.75 }}>{text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Chips de palavras-chave */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+                  {archDetail.keywords.map(k => (
+                    <span key={k} style={{ background: `${archDetail.color}15`, color: archDetail.color, border: `1px solid ${archDetail.color}40`, padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700 }}>{k}</span>
+                  ))}
+                </div>
+
+                {/* Mensagem ao cliente */}
+                <div style={{ background: '#fdf6ee', border: `1px solid ${archDetail.color}30`, borderRadius: '14px', padding: '1.3rem' }}>
+                  <p style={{ fontSize: '0.68rem', color: '#8b6914', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.7rem' }}>✦ O que isso revela sobre o seu espaço</p>
+                  <p style={{ color: '#333', fontSize: '0.9rem', lineHeight: 1.8, fontStyle: 'italic' }}>{ARCH_CLIENT_TEXT[topArchId]}</p>
+                </div>
+              </>
+            ) : (
+              <p style={{ color: '#aaa', fontSize: '0.85rem' }}>Arquétipo não identificado nas respostas.</p>
+            )}
+          </div>
+
+          {/* Síntese final */}
+          {topTemp && topArch && (
+            <div style={{ marginTop: '2.5rem', background: 'linear-gradient(135deg, #14202B, #1e3348)', color: '#fff', borderRadius: '16px', padding: '1.8rem', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.68rem', color: '#C4973D', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '1rem' }}>Síntese do Perfil</p>
+              <p style={{ fontSize: '1rem', lineHeight: 1.9, opacity: 0.9, maxWidth: '680px', margin: '0 auto', fontWeight: 300 }}>
+                Um perfil <strong style={{ color: '#C4973D', fontWeight: 700 }}>{topTemp.label}</strong> com alma <strong style={{ color: '#C4973D', fontWeight: 700 }}>{topArch.label}</strong> resulta em um projeto que equilibra{' '}
+                <em>{temperaments.find(t=>t.id===topTempId)?.description?.toLowerCase()}</em> com{' '}
+                <em>{archetypes.find(a=>a.id===topArchId)?.description?.toLowerCase()}</em>. Uma combinação que garante ao mesmo tempo funcionalidade emocional e identidade visual única.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* ══ 05 — UNIVERSO PESSOAL ══ */}
