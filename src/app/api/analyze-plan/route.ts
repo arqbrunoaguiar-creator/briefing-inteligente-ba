@@ -19,32 +19,7 @@ export async function POST(req: NextRequest) {
     const prompt = `Analise esta planta baixa e identifique os cômodos. 
     Retorne APENAS um JSON: {"rooms": ["suite-master", "cozinha", "sala-estar", "lavabo", "home-office", "banheiro", "area-servico", "varanda", "quarto"], "analysis": "Descrição curta em português"}`;
 
-    // 1. TENTAR GEMINI 2.5 FLASH (O mais novo e funcional para esta chave)
-    if (geminiKey) {
-      try {
-        console.log("Tentando Gemini 2.5 Flash...");
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [
-              { inline_data: { mime_type: mimeType, data: base64 } },
-              { text: prompt }
-            ]}]
-          })
-        });
-
-        if (res.ok) {
-          const result = await res.json();
-          const text = result.candidates[0].content.parts[0].text;
-          const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-          const parsed = JSON.parse(jsonStr);
-          return NextResponse.json({ ...parsed, provider: 'gemini-2.5' });
-        }
-      } catch (e) { console.error("Gemini 2.5 falhou..."); }
-    }
-
-    // 2. TENTAR CLAUDE (Backup)
+    // 1. TENTAR CLAUDE (principal — melhor leitura de plantas)
     if (anthropicKey) {
       try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -70,6 +45,30 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ ...parsed, provider: 'claude' });
         }
       } catch (e) { console.error("Claude falhou..."); }
+    }
+
+    // 2. TENTAR GEMINI (Backup)
+    if (geminiKey) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { inline_data: { mime_type: mimeType, data: base64 } },
+              { text: prompt }
+            ]}]
+          })
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          const text = result.candidates[0].content.parts[0].text;
+          const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          const parsed = JSON.parse(jsonStr);
+          return NextResponse.json({ ...parsed, provider: 'gemini-2.5' });
+        }
+      } catch (e) { console.error("Gemini falhou..."); }
     }
 
     // 3. TENTAR OPENAI (Backup)
