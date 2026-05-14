@@ -24,10 +24,11 @@ export default function BriefingPage() {
   const [selectedInvestment, setSelectedInvestment] = useState('');
   const [roomHabits, setRoomHabits] = useState<any>({});
   const [selectedRooms, setSelectedRooms] = useState<string[]>([]);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     async function loadInitial() {
-      const { data } = await supabase.from('briefings').select('*').eq('id', params.id).single();
+      const { data, error } = await supabase.from('briefings').select('*').eq('id', params.id).single();
       if (data) {
         setClient(data);
         // Restaura seleção de ambientes se já existir
@@ -36,10 +37,19 @@ export default function BriefingPage() {
         if (data.status === 'pre') {
           await supabase.from('briefings').update({ status: 'pro' }).eq('id', params.id);
         }
+      } else {
+        setNotFound(true);
       }
     }
     loadInitial();
   }, [params.id]);
+
+  if (notFound) return (
+    <div className={styles.loading} style={{ flexDirection: 'column', gap: '1rem' }}>
+      <p>Briefing não encontrado.</p>
+      <a href="/admin" style={{ color: '#C4973D', fontSize: '0.9rem' }}>← Voltar ao Dashboard</a>
+    </div>
+  );
 
   if (!client) return <div className={styles.loading}>Carregando Briefing...</div>;
 
