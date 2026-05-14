@@ -107,7 +107,9 @@ export default function DossiePage() {
           
           {analyzing ? (
             <p>IA analisando dados do projeto... isso pode levar 10 segundos.</p>
-          ) : aiAnalysis ? (
+          ) : aiAnalysis?.error ? (
+            <p style={{ color: '#c0392b' }}>⚠️ Análise IA indisponível: {aiAnalysis.error}. Verifique a configuração da chave Gemini no Vercel.</p>
+          ) : aiAnalysis?.archetype ? (
             <div className={styles.aiContent}>
               <div className={styles.aiInsightCard}>
                 <h3>Arquétipo: {aiAnalysis.archetype.name}</h3>
@@ -117,31 +119,35 @@ export default function DossiePage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                 <div className={styles.statCard}>
                   <h4>Score de Complexidade</h4>
-                  <div className={styles.scoreBadge}>{aiAnalysis.complexity.score}</div>
-                  <p style={{ fontSize: '0.8rem', marginTop: '1rem' }}>{aiAnalysis.complexity.reason}</p>
+                  <div className={styles.scoreBadge}>{aiAnalysis.complexity?.score ?? '—'}</div>
+                  <p style={{ fontSize: '0.8rem', marginTop: '1rem' }}>{aiAnalysis.complexity?.reason}</p>
                 </div>
                 <div className={styles.statCard}>
                   <h4>Estado Emocional</h4>
-                  <p><strong>{aiAnalysis.emotionalState.state}</strong></p>
-                  <p style={{ fontSize: '0.8rem' }}>{aiAnalysis.emotionalState.recommendation}</p>
+                  <p><strong>{aiAnalysis.emotionalState?.state}</strong></p>
+                  <p style={{ fontSize: '0.8rem' }}>{aiAnalysis.emotionalState?.recommendation}</p>
                 </div>
               </div>
 
-              <div className={styles.conflictAlert}>
-                <h4>Conflitos Detectados</h4>
-                {aiAnalysis.conflicts.map((c: any, i: number) => (
-                  <p key={i} style={{ borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem 0' }}>
-                    <strong>[{c.level.toUpperCase()}] {c.type}:</strong> {c.issue}
-                  </p>
-                ))}
-              </div>
+              {aiAnalysis.conflicts?.length > 0 && (
+                <div className={styles.conflictAlert}>
+                  <h4>Conflitos Detectados</h4>
+                  {aiAnalysis.conflicts.map((c: any, i: number) => (
+                    <p key={i} style={{ borderBottom: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem 0' }}>
+                      <strong>[{c.level?.toUpperCase()}] {c.type}:</strong> {c.issue}
+                    </p>
+                  ))}
+                </div>
+              )}
 
-              <div style={{ marginTop: '2rem' }}>
-                <h4>Diretrizes de Conceito</h4>
-                <ul>
-                  {aiAnalysis.concept.map((c: string, i: number) => <li key={i}>{c}</li>)}
-                </ul>
-              </div>
+              {aiAnalysis.concept?.length > 0 && (
+                <div style={{ marginTop: '2rem' }}>
+                  <h4>Diretrizes de Conceito</h4>
+                  <ul>
+                    {aiAnalysis.concept.map((c: string, i: number) => <li key={i}>{c}</li>)}
+                  </ul>
+                </div>
+              )}
             </div>
           ) : <p>Aguardando análise da IA...</p>}
         </section>

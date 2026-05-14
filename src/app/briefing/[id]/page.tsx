@@ -23,12 +23,16 @@ export default function BriefingPage() {
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [selectedInvestment, setSelectedInvestment] = useState('');
   const [roomHabits, setRoomHabits] = useState<any>({});
+  const [selectedRooms, setSelectedRooms] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadInitial() {
       const { data } = await supabase.from('briefings').select('*').eq('id', params.id).single();
       if (data) {
         setClient(data);
+        // Restaura seleção de ambientes se já existir
+        const savedRooms = data.rooms || data.answers?.preRegistration?.detectedRooms || [];
+        setSelectedRooms(savedRooms.filter((r: string) => roomTemplates[r]));
         if (data.status === 'pre') {
           await supabase.from('briefings').update({ status: 'pro' }).eq('id', params.id);
         }
@@ -39,7 +43,7 @@ export default function BriefingPage() {
 
   if (!client) return <div className={styles.loading}>Carregando Briefing...</div>;
 
-  const rooms = (client.answers?.preRegistration?.detectedRooms || client.rooms || []).filter((r: string) => roomTemplates[r]);
+  const rooms = selectedRooms.filter((r: string) => roomTemplates[r]);
 
   const STYLE_START = 1;
   const STYLE_END = STYLE_START + styleQuestions.length - 1;
@@ -50,13 +54,22 @@ export default function BriefingPage() {
   const INVEST_STEP = HOBBIES_STEP + 1;
   const PRIO_STEP = INVEST_STEP + 1;
   const DYN_STEP = PRIO_STEP + 1;
-  const ROOM_START = DYN_STEP + 1;
+  const ROOMS_SELECT_STEP = DYN_STEP + 1;
+  const ROOM_START = ROOMS_SELECT_STEP + 1;
   const ROOM_END = ROOM_START + Math.max(rooms.length - 1, 0);
-  const REVIEW_STEP = rooms.length > 0 ? ROOM_END + 1 : DYN_STEP + 1;
+  const REVIEW_STEP = rooms.length > 0 ? ROOM_END + 1 : ROOMS_SELECT_STEP + 1;
 
   const nav = (dir: 'next' | 'prev') => {
     setStep(s => Math.max(0, Math.min(dir === 'next' ? s + 1 : s - 1, REVIEW_STEP)));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleRoomsSelect = async (roomKey: string) => {
+    const updated = selectedRooms.includes(roomKey)
+      ? selectedRooms.filter(r => r !== roomKey)
+      : [...selectedRooms, roomKey];
+    setSelectedRooms(updated);
+    await supabase.from('briefings').update({ rooms: updated }).eq('id', params.id);
   };
 
   const handleFinish = async () => {
@@ -79,6 +92,7 @@ export default function BriefingPage() {
 
     await supabase.from('briefings').update({
       answers: fullPayload,
+      rooms: selectedRooms,
       status: 'con'
     }).eq('id', params.id);
 
@@ -350,6 +364,37 @@ export default function BriefingPage() {
               )}
             </div>
           ))}
+        </div>
+      );
+    }
+
+    // ── ROOMS_SELECT_STEP: Seleção de Ambientes ──────────────────────
+    if (step === ROOMS_SELECT_STEP) {
+      return (
+        <div className={styles.section}>
+          <p className={styles.stepLabel}>Ambientes do Projeto</p>
+          <h2>Quais ambientes fazem parte deste projeto?</h2>
+          <p style={{ color: '#8e8e93', marginBottom: '3rem' }}>Selecione todos os cômodos que serão trabalhados. Você detalhará cada um na próxima etapa.</p>
+          <div className={styles.chipGrid}>
+            {Object.values(roomTemplates).map(room => {
+              const isSelected = selectedRooms.includes(room.id);
+              return (
+                <button
+                  key={room.id}
+                  onClick={() => handleRoomsSelect(room.id)}
+                  className={`${styles.chip} ${isSelected ? styles.chipActive : ''}`}
+                  style={{ fontSize: '1rem', padding: '0.8rem 1.5rem' }}
+                >
+                  {room.icon} {room.name}
+                </button>
+              );
+            })}
+          </div>
+          {selectedRooms.length > 0 && (
+            <p style={{ marginTop: '2rem', color: '#C4973D', fontWeight: 600 }}>
+              ✓ {selectedRooms.length} ambiente{selectedRooms.length > 1 ? 's' : ''} selecionado{selectedRooms.length > 1 ? 's' : ''}
+            </p>
+          )}
         </div>
       );
     }
