@@ -21,8 +21,8 @@ export default function DossiePage() {
       const { data: dbData } = await supabase.from('briefings').select('*').eq('id', params.id).single();
       if (dbData) {
         setData(dbData);
-        // Dispara análise IA se ainda não existir
-        if (!dbData.ai_analysis) {
+        // Dispara análise IA se não existir ou se a anterior teve erro
+        if (!dbData.ai_analysis || dbData.ai_analysis.error) {
           generateAIAnalysis(dbData);
         } else {
           setAiAnalysis(dbData.ai_analysis);
